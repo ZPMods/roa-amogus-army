@@ -1,0 +1,59 @@
+# Format is <key name>: <value> (with a space after the : )
+# For example
+# the_option_name: your input
+
+
+aseprite_path: # TO USE ASEPRITE, PUT YOUR PATH BEFORE THE "#" <-
+    # ^ This should point to your Aseprite.exe absolute path, with no quotes, for example: 
+    # aseprite_path: C:/Program Files/Aseprite/aseprite.exe
+    # If correct, copying the path into your file explorer address bar will open aseprite.
+    # This is needed for the assistant to automatically export your animations to spritesheets.
+    # If you use Steam for Aseprite, you can find the path with:
+    #   The aseprite page of your library, The gear icon at the top right,
+    #   Manage, Browse Local Files, Copy the path of Aseprite.exe to the config.
+
+
+    # *Aseprite Tag Color Configs*
+    # Legal values are:
+    #   black, red, orange, yellow, green, blue, purple, gray
+    # Can input multiple colors using sequence syntax https://learnxinyminutes.com/docs/yaml/#:~:text=2002%2D02%2D02%5D%0A%0A%23-,Sequences,
+anim_tag_color: blue
+    # The color of Aseprite tag representing an animation. 
+    # If you keep multiple aseprite animations in a file, put each in a tag with this 
+    # color, and the assistant will export them under that tag's name.
+window_tag_color: red
+    # The color of Aseprite tag representing an attack window.
+    # If a tag of this color is found, it will be used to add animation meta-data to the 
+    # bottom of the attack's script.
+
+
+generate_hurtboxes: false
+    # If the assistant should automatically generate hurtboxes from your anim files.
+    # See https://rivalslib.com/assistant/animation_handling.html#hurtbox-generation
+
+
+library_update_level: patch
+    # What kind of library updates to allow. 
+    # This only affects the functions available to inject, not assistant behavior.
+    # major = All updates are allowed, even if they may 
+    #   break existing code.
+    # minor = Don't allow breaking changes to existing 
+    #   functions, but do allow new functions. Could cause name collisions.
+    # patch = Only allow changes to existing functions 
+    #   that fix bugs or can't break current functionality.
+    # none = No updates.
+
+
+assistant_should_self_update: true
+    # If the assistant should automatically receive behavior updates.
+
+
+warnings:
+- desync_object_var_set_in_draw_script
+- desync_unsafe_camera_read
+- check_window_timer_without_check_hitpause
+- recursive_set_attack
+    # Comment out any warnings you want to disable with `#`.
+    # Learn more about warnings at https://rivalslib.com/assistant/warnings/
+is_ssl: false
+    # If the character is for SSL mode (doubles sprite size)
