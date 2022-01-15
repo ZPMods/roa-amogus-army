@@ -7,3 +7,9 @@
         }
     }
 }
+
+#define set_state {
+    if (argument[0].state != argument[1]) {
+        argument[0].state = argument[1];
+    }
+}

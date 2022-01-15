@@ -2,8 +2,50 @@ pet_w = 0;
 run_speed = 0;
 max_run_dist = 999999999;
 init_done = false;
+max_amogus = 20;
 
 // VARIABLES
+divider = 10
+
+// Affected by divider
+min_acceleration = 2.0;
+max_acceleration = 3.0;
+min_walk_speed = 25.0;
+max_walk_speed = 30.0;
+
+// Not affected by divider
+min_jump_height = 6.0;
+max_jump_height = 9.0;
+
+min_nojump_time = 60;
+max_nojump_time = 120;
+
+x_min_stop_dist = 40;
+x_max_stop_dist = 100;
+
+y_jump_dist = 60;
+
+min_reaction_time = 5;
+max_reaction_time = 20;
+
+min_focused_time = 600;
+max_focused_time = 900;
+
+min_unfocused_time = 300;
+max_unfocused_time = 600;
+
+min_unfocused_walk_time = 20;
+max_unfocused_walk_time = 60;
+
+min_unfocused_wait_time = 60;
+max_unfocused_wait_time = 120;
+
+ground_friction = 0.9;
+air_friction = 0.99;
+gravity = 0.2;
+fall_speed = 9.81;
+chance_to_lose_focus = 0.33;
+
 
 // Army
 army = [];
@@ -26,8 +68,8 @@ amogus_colors = [
 
 // States setup
 state_properties = [
-    { state: "idle", speed: 6, frameCount: 2 },
-    { state: "run", speed: 15, frameCount: 4 },
+    { state: "idle", speed: 3, frameCount: 2 },
+    { state: "run", speed: 12, frameCount: 6 },
     { state: "rise", speed: 15, frameCount: 2 },
     { state: "fall", speed: 15, frameCount: 2 },
     { state: "land", speed: 12, frameCount: 1 },
@@ -46,8 +88,8 @@ amogus_parts = [
 // Hats
 hat_names = [
     "post_it",
-    "bear_ears",
-    "mini_crewmate"
+    "bear_ears"
+    //"mini_crewmate"
 ]
 
 // All sprites
@@ -63,6 +105,6 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
     for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
         var state_property = state_properties[state_property_i];
 
-        sprite_change_offset(sprite_name + "_" + state_property.state, 17, 23);
+        sprite_change_offset(sprite_name + "_" + state_property.state, 32, 46);
     }
 }

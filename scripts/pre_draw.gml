@@ -2,9 +2,9 @@
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
-	amogus.x = owner.x+100;
-	amogus.y = owner.y;
-    amogus.dir = owner.spr_dir;
+    if (amogus = noone) {
+        continue;
+    }
 
     var speed = get_state_properties(amogus.state).speed;
     var frame_timer_max = 60 / speed;
