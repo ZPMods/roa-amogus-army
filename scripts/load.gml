@@ -88,8 +88,11 @@ amogus_parts = [
 // Hats
 hat_names = [
     "post_it",
-    "bear_ears"
+    "bear_ears",
     //"mini_crewmate"
+    "young_sprout",
+    "knight_horns",
+    "headslug"
 ]
 
 // All sprites
