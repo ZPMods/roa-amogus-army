@@ -26,7 +26,9 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     lib_draw_sprite("amogus_outline_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
 
     // Render the hat
-    lib_draw_sprite(amogus.hat+ "_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
+    if (amogus.hat != "none") {
+        lib_draw_sprite(amogus.hat+ "_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
+    }
 }
 
 // #region vvv LIBRARY DEFINES AND MACROS vvv

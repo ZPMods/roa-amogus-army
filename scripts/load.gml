@@ -87,6 +87,7 @@ amogus_parts = [
 
 // Hats
 hat_names = [
+    "none",
     "post_it",
     "bear_ears",
     //"mini_crewmate"
@@ -104,7 +105,10 @@ for(var i = 0; i < array_length(hat_names); i++) {
 // foreach sprite
 for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_i++) {
     var sprite_name = sprite_names[sprite_name_i];
-    
+    if (sprite_name == "none") {
+        continue;
+    }
+
     for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
         var state_property = state_properties[state_property_i];
 
