@@ -1,5 +1,5 @@
 #define new_random_amogus {
-    if (array_length(army) >= max_amogus) {
+    if (amogus_count() >= max_amogus) {
         return;
     }
 
@@ -8,7 +8,7 @@
                         state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, //Air
-                        hp: 3, tumble: true,
+                        hp: 1, tumble: true, heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0 }; // Other
     
     // VISUAL
@@ -26,9 +26,37 @@
     new_amogus.no_jump_timer = rand(0, min_nojump_time, max_nojump_time, true);
 
     // Put in array
-    array_push(army, new_amogus);
+    add_to_array(new_amogus);
 
     jump(new_amogus);
+}
+
+#define add_to_array {
+    for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
+        var army_item = army[army_item_i];
+
+        if (army_item == noone) {
+            print("found empty");
+            army[army_item_i] = argument[0];
+            return;
+        }
+    }
+
+    array_push(army, argument[0]);
+}
+
+#define amogus_count {
+    var count = 0;
+    
+    for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
+        var army_item = army[army_item_i];
+
+        if (army_item != noone) {
+            count++;
+        }
+    }
+
+    return count;
 }
 
 #define randomize_walk_values {
@@ -87,7 +115,7 @@
 
     for (i=0; i <= 999999; i++) { 
         if (!collision_at_point(amogus.x, round(amogus.y)-i)) {
-            return amogus.y-i-1;
+            return amogus.y-i+1;
         }
     }
 
@@ -117,7 +145,7 @@
 }
 
 #define should_walk {
-    return (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0);
+    return (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead);
 }
 
 #define walk {

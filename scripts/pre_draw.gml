@@ -2,7 +2,7 @@
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
-    if (amogus = noone) {
+    if (amogus == noone) {
         continue;
     }
 
@@ -27,7 +27,14 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 
     // Render the hat
     if (amogus.hat != "none") {
-        lib_draw_sprite(amogus.hat+ "_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
+        var hat_x = amogus.x;
+
+        if (amogus.dead) {
+            var offset = amogus.x - amogus.dead_x;
+            hat_x = amogus.x - offset*2;
+        }
+
+        lib_draw_sprite(amogus.hat+ "_" + amogus.state, amogus.cur_anim_frame, hat_x, amogus.y, {xscale: amogus.dir});
     }
 }
 

@@ -11,6 +11,17 @@ if (!init_done) {
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
+    if (amogus == noone) {
+        //print("he is gone you fuck");
+        continue;
+    }
+
+    // HITPAUSE
+    if (amogus.hitpause_timer > 0) {
+        amogus.hitpause_timer --;
+        continue;
+    }
+
     // Friction
     amogus.momentum_x *= amogus.on_ground ? ground_friction : air_friction;
 
@@ -43,7 +54,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             }
         }
 
-        if (amogus.wait_timer <= 0 && amogus.walk_timer <= 0) {
+        if (amogus.wait_timer <= 0 && amogus.walk_timer <= 0 && amogus.land_timer <= 0 && amogus.on_ground) {
             randomize_dir(amogus);
             amogus.walk_timer = rand(army_item_i, min_unfocused_walk_time, max_unfocused_walk_time, true);
         }
@@ -104,9 +115,16 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     // COLLISION CHECKS
     // Ground
     if (collision_at_point(amogus.x, amogus.y+1) && amogus.momentum_y >= 0) {
-        if (!amogus.on_ground) {
+        if (!amogus.on_ground && !amogus.dead) {
             // On land
-            amogus.land_timer = amogus.fall_time;
+            var landlag_mult = 1;
+            if (amogus.tumble == true) {
+                amogus.tumble = false;
+                amogus.heavy_land = true;
+                landlag_mult = 2;
+            }
+
+            amogus.land_timer = amogus.fall_time * landlag_mult;
 
             amogus.fall_time = 0;
 
@@ -117,7 +135,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             }
         }
 
-        if (collision_at_point(amogus.x, amogus.y)) {
+        if (collision_at_point(amogus.x, amogus.y) && !amogus.dead) {
             amogus.y = upper_ground_y(amogus);
         }
 
@@ -127,9 +145,14 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             amogus.no_jump_timer = rand(army_item_i, min_nojump_time, max_nojump_time, true);
         } 
     }
+    // Air start
     else {
         if (amogus.on_ground) {
             amogus.on_ground = false;
+
+            if (amogus.heavy_land == true) {
+                amogus.heavy_land = false;
+            }
         }
     }
 
@@ -141,7 +164,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 
         amogus.momentum_y += gravity;
 
-        if (abs(amogus.momentum_y) > fall_speed) {
+        if (amogus.momentum_y > fall_speed && !amogus.tumble) {
             amogus.momentum_y = fall_speed;
         }
     }
@@ -150,15 +173,28 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 
     // Walls
-    if (abs(amogus.momentum_x) > 0 && collision_point(amogus.x + 16 * dir_from_momentum(amogus), amogus.y - 20, asset_get("par_block"), false, true)) {
-        amogus.momentum_x = 0;
+    if (abs(amogus.momentum_x) > 0 && collision_point(amogus.x + 16 * dir_from_momentum(amogus), amogus.y - 20, asset_get("par_block"), false, true) && !amogus.dead) {
+        if (amogus.tumble) {
+            amogus.momentum_x *= -1;
+        }
+        else {
+            amogus.momentum_x = 0;
+        }
     }
 
     // GAME INTERACTIONS
     // Respawn on bottom blastzone
     if (amogus.y >= get_stage_data(SD_Y_POS) + get_stage_data(SD_BOTTOM_BLASTZONE)) {
-        amogus.x = room_width / 2 + rand(army_item_i, -150, 150, true);
-        amogus.y = 0;
+        if (amogus.dead) {
+            army[army_item_i] = noone;
+            print("gone");
+            continue;
+        }
+        else {
+            amogus.x = room_width / 2 + rand(army_item_i, -150, 150, true);
+            amogus.y = 0;
+            amogus.tumble = true;
+        }
     }
 
     // APPLY
@@ -172,44 +208,64 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             set_state(amogus, "run");
         }
         else {
+            // Land
             if (amogus.land_timer > 0) {
-                set_state(amogus, "land");
+                // Heavy land
+                if (amogus.heavy_land) {
+                    set_state(amogus, "heavyland");
+                }
+                else {
+                    set_state(amogus, "land");
+                }
             } else {
                 set_state(amogus, "idle");
             }
         }
     }
     else {
-        if (amogus.momentum_y > 0) {
-            set_state(amogus, "fall");
+        // Tumble
+        if (amogus.dead == true) {
+            set_state(amogus, "dead");
+        }
+        else if (amogus.tumble == true) {
+            set_state(amogus, "tumble");
         }
         else {
-            set_state(amogus, "rise");
+            if (amogus.momentum_y > 0) {
+                set_state(amogus, "fall");
+            }
+            else {
+                set_state(amogus, "rise");
+            }
         }
     }
 
     // Timers
-    if (amogus.land_timer > 0) {
+    if (amogus.land_timer > 0 && !amogus.dead) {
         amogus.land_timer--;
     }
 
-    if (amogus.wait_timer > 0) {
+    if (amogus.wait_timer > 0 && !amogus.dead) {
         amogus.wait_timer--;
     }
     
-    if (amogus.focused_timer > 0) {
+    if (amogus.focused_timer > 0 && !amogus.dead) {
         amogus.unfocused_timer--;
     } 
 
-    if (amogus.unfocused_timer > 0) {
+    if (amogus.unfocused_timer > 0 && !amogus.dead) {
         amogus.unfocused_timer--;
     } 
 
-    if (amogus.walk_timer > 0) {
+    if (amogus.walk_timer > 0 && !amogus.dead) {
         amogus.walk_timer--;
     } 
+
+    if (amogus.hit_recently_timer > 0 && !amogus.dead) {
+        amogus.hit_recently_timer--;
+    } 
     
-    if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist) {
+    if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist && !amogus.dead) {
         amogus.no_jump_timer--;
     } 
 }
@@ -219,6 +275,64 @@ if (owner.state == PS_PARRY && owner.window_timer == 0) { // WARN: Possible repe
     new_random_amogus();
 }
 
+// OWNER GOT HIT
+if (owner.state_cat == SC_HITSTUN && owner.state_timer == 0 && owner.hitpause) {
+    if (!hit_detected_done) {
+        // On hit
+        hit_detected_done = true;
+
+        for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
+            var amogus = army[army_item_i];
+
+            if (amogus == noone) {
+                continue;
+            }
+
+            // Affect close amoguses
+            if (point_distance(owner.x, owner.y, amogus.x, amogus.y) < hit_transfer_radius && !amogus.dead) {
+                // Deal damage
+                if (amogus.hit_recently_timer <= 0) {
+                    amogus.hp--;
+                    if (amogus.hp <= 0) {
+                        amogus.tumble = true;
+                        amogus.dead = true;
+                        amogus.dead_x = amogus.x;
+                    }
+                }
+                
+                amogus.hit_recently_timer = hit_resistance_time;
+                amogus.hitpause_timer = owner.hitstop_full;
+                amogus.tumble = true;
+
+                // Hitbox
+                var hitbox = owner.enemy_hitboxID;
+
+                var ang = get_hitbox_angle(hitbox);
+                ang += rand(army_item_i, -hit_ang_var, hit_ang_var, true);
+
+                var force = hitbox.kb_value + hitbox.kb_scale * 0.05 * get_player_damage(owner.player); 
+                force += rand(army_item_i, -hit_force_var, hit_force_var, true);
+
+                var force_x = lengthdir_x( force, ang );
+                var force_y = lengthdir_y( force, ang );
+
+                prints(ang, force_y);
+
+                // Bounce on ground
+                if (amogus.on_ground && force_y > 0) {
+                    force_y *= -0.5;
+                }
+
+                amogus.momentum_x = force_x;
+                amogus.momentum_y = force_y;
+            }
+        }
+    }
+}
+else if (hit_detected_done) {
+    hit_detected_done = false;
+}
+
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
@@ -226,8 +340,17 @@ if (owner.state == PS_PARRY && owner.window_timer == 0) { // WARN: Possible repe
     // Returns if the current window_timer matches the frame AND the attack is not in hitpause
     return window_timer == frame and !hitpause
 
+#define prints // Version 0
+    // Prints each parameter to console, separated by spaces.
+    var _out_string = string(argument[0])
+    for (var i=1; i<argument_count; i++) {
+        _out_string += " "
+        _out_string += string(argument[i])
+    }
+    print(_out_string)
+
 #define new_random_amogus // Version 0
-    if (array_length(army) >= max_amogus) {
+    if (amogus_count() >= max_amogus) {
         return;
     }
 
@@ -236,7 +359,7 @@ if (owner.state == PS_PARRY && owner.window_timer == 0) { // WARN: Possible repe
                         state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, //Air
-                        hp: 3, tumble: true,
+                        hp: 1, tumble: true, heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0 }; // Other
 
     // VISUAL
@@ -254,9 +377,35 @@ if (owner.state == PS_PARRY && owner.window_timer == 0) { // WARN: Possible repe
     new_amogus.no_jump_timer = rand(0, min_nojump_time, max_nojump_time, true);
 
     // Put in array
-    array_push(army, new_amogus);
+    add_to_array(new_amogus);
 
     jump(new_amogus);
+
+#define add_to_array // Version 0
+    for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
+        var army_item = army[army_item_i];
+
+        if (army_item == noone) {
+            print("found empty");
+            army[army_item_i] = argument[0];
+            return;
+        }
+    }
+
+    array_push(army, argument[0]);
+
+#define amogus_count // Version 0
+    var count = 0;
+
+    for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
+        var army_item = army[army_item_i];
+
+        if (army_item != noone) {
+            count++;
+        }
+    }
+
+    return count;
 
 #define randomize_walk_values // Version 0
     // Walk speed
@@ -331,7 +480,7 @@ if (owner.state == PS_PARRY && owner.window_timer == 0) { // WARN: Possible repe
 
     for (i=0; i <= 999999; i++) {
         if (!collision_at_point(amogus.x, round(amogus.y)-i)) {
-            return amogus.y-i-1;
+            return amogus.y-i+1;
         }
     }
 
@@ -349,7 +498,7 @@ if (owner.state == PS_PARRY && owner.window_timer == 0) { // WARN: Possible repe
     }
 
 #define should_walk // Version 0
-    return (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0);
+    return (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead);
 
 #define walk // Version 0
     argument[0].momentum_x += argument[0].acceleration * argument[0].dir;

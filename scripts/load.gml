@@ -1,10 +1,18 @@
 pet_w = 0;
 run_speed = 0;
 max_run_dist = 999999999;
-init_done = false;
-max_amogus = 20;
 
 // VARIABLES
+init_done = false;
+
+hit_detected_done = false;
+hit_transfer_radius = 50;
+hit_resistance_time = 180;
+hit_ang_var = 7.5;
+hit_force_var = 1;
+dead_rot_speed = 12;
+
+max_amogus = 10;
 divider = 10
 
 // Affected by divider
