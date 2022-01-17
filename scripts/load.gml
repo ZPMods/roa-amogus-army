@@ -83,7 +83,7 @@ state_properties = [
     { state: "land", speed: 12, frameCount: 1 },
     { state: "tumble", speed: 20, frameCount: 4 },
     { state: "heavyland", speed: 12, frameCount: 1 },
-    { state: "dead", speed: 12, frameCount: 1 }
+    { state: "dead", speed: 16, frameCount: 4 }
 ];
 
 // Spritesheets setup

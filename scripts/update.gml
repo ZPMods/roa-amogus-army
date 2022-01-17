@@ -12,7 +12,6 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
     if (amogus == noone) {
-        //print("he is gone you fuck");
         continue;
     }
 
@@ -187,7 +186,6 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     if (amogus.y >= get_stage_data(SD_Y_POS) + get_stage_data(SD_BOTTOM_BLASTZONE)) {
         if (amogus.dead) {
             army[army_item_i] = noone;
-            print("gone");
             continue;
         }
         else {
@@ -316,8 +314,6 @@ if (owner.state_cat == SC_HITSTUN && owner.state_timer == 0 && owner.hitpause) {
                 var force_x = lengthdir_x( force, ang );
                 var force_y = lengthdir_y( force, ang );
 
-                prints(ang, force_y);
-
                 // Bounce on ground
                 if (amogus.on_ground && force_y > 0) {
                     force_y *= -0.5;
@@ -340,15 +336,6 @@ else if (hit_detected_done) {
     // Returns if the current window_timer matches the frame AND the attack is not in hitpause
     return window_timer == frame and !hitpause
 
-#define prints // Version 0
-    // Prints each parameter to console, separated by spaces.
-    var _out_string = string(argument[0])
-    for (var i=1; i<argument_count; i++) {
-        _out_string += " "
-        _out_string += string(argument[i])
-    }
-    print(_out_string)
-
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;
@@ -359,7 +346,7 @@ else if (hit_detected_done) {
                         state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, //Air
-                        hp: 1, tumble: true, heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
+                        hp: 3, tumble: true, heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0 }; // Other
 
     // VISUAL
