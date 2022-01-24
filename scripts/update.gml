@@ -123,7 +123,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
                 landlag_mult = 2;
             }
 
-            amogus.land_timer = amogus.fall_time * landlag_mult;
+            amogus.land_timer = max(amogus.land_timer, amogus.fall_time * landlag_mult);
 
             amogus.fall_time = 0;
 
