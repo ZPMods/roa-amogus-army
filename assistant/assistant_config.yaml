@@ -32,7 +32,7 @@ generate_hurtboxes: false
     # See https://rivalslib.com/assistant/animation_handling.html#hurtbox-generation
 
 
-library_update_level: patch
+library_update_level: major
     # What kind of library updates to allow. 
     # This only affects the functions available to inject, not assistant behavior.
     # major = All updates are allowed, even if they may 
