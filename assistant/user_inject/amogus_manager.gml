@@ -36,7 +36,6 @@
         var army_item = army[army_item_i];
 
         if (army_item == noone) {
-            print("found empty");
             army[army_item_i] = argument[0];
             return;
         }
@@ -193,6 +192,24 @@
     argument[0].momentum_y = -jump_force;
     argument[0].momentum_x = jump_forward * dir_to_owner(argument[0]);
     argument[0].is_jumping = true;
+}
+
+#define deal_damage {
+    if (argument[0].hit_recently_timer <= 0) {
+        argument[0].hp--;
+        if (argument[0].hp <= 0) {
+            argument[0].tumble = true;
+            argument[0].dead = true;
+            argument[0].dead_x = argument[0].x;
+        }
+
+        if (argument[0].dead) {
+            argument[0].momentum_x = rand(0, -2.5, 2.5, false);
+            argument[0].momentum_y = -rand(1, 2.0, 5.0, false);
+        }
+    }
+    
+    argument[0].hit_recently_timer = hit_resistance_time;
 }
 
 #define rand {

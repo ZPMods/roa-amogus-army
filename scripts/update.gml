@@ -121,6 +121,9 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
                 amogus.tumble = false;
                 amogus.heavy_land = true;
                 landlag_mult = 2;
+
+                // Deal damage
+                deal_damage(amogus);
             }
 
             amogus.land_timer = max(amogus.land_timer, amogus.fall_time * landlag_mult);
@@ -288,17 +291,7 @@ if (owner.state_cat == SC_HITSTUN && owner.state_timer == 0 && owner.hitpause) {
 
             // Affect close amoguses
             if (point_distance(owner.x, owner.y, amogus.x, amogus.y) < hit_transfer_radius && !amogus.dead) {
-                // Deal damage
-                if (amogus.hit_recently_timer <= 0) {
-                    amogus.hp--;
-                    if (amogus.hp <= 0) {
-                        amogus.tumble = true;
-                        amogus.dead = true;
-                        amogus.dead_x = amogus.x;
-                    }
-                }
-                
-                amogus.hit_recently_timer = hit_resistance_time;
+
                 amogus.hitpause_timer = owner.hitstop_full;
                 amogus.tumble = true;
 
@@ -373,7 +366,6 @@ else if (hit_detected_done) {
         var army_item = army[army_item_i];
 
         if (army_item == noone) {
-            print("found empty");
             army[army_item_i] = argument[0];
             return;
         }
@@ -505,6 +497,23 @@ else if (hit_detected_done) {
     if (abs(argument[0].momentum_x) > argument[0].walk_speed) {
         argument[0].momentum_x = argument[0].walk_speed * argument[0].dir;
     }
+
+#define deal_damage // Version 0
+    if (argument[0].hit_recently_timer <= 0) {
+        argument[0].hp--;
+        if (argument[0].hp <= 0) {
+            argument[0].tumble = true;
+            argument[0].dead = true;
+            argument[0].dead_x = argument[0].x;
+        }
+
+        if (argument[0].dead) {
+            argument[0].momentum_x = rand(0, -2.5, 2.5, false);
+            argument[0].momentum_y = -rand(1, 2.0, 5.0, false);
+        }
+    }
+
+    argument[0].hit_recently_timer = hit_resistance_time;
 
 #define set_state // Version 0
     if (argument[0].state != argument[1]) {
