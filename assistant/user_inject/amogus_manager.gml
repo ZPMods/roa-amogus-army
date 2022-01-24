@@ -110,6 +110,16 @@
     }
 }
 
+#define collision_down_line { // (x, y, down_offset)
+    if (collision_line(argument[0], argument[1], argument[0], argument[1]+argument[2], asset_get("par_block"), false, true) ||
+    collision_line(argument[0], argument[1], argument[0], argument[1]+argument[2], asset_get("par_jumpthrough"), false, true)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 #define upper_ground_y {
     var amogus = argument[0];
 
@@ -145,7 +155,19 @@
 }
 
 #define should_walk {
-    return (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead);
+    var bool = false;
+    
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead) {
+
+        if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
+            bool = false;
+        }
+        else {
+            bool = true;
+        }
+    }
+
+    return bool;
 }
 
 #define walk {

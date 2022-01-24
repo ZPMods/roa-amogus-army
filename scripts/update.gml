@@ -485,7 +485,19 @@ else if (hit_detected_done) {
     }
 
 #define should_walk // Version 0
-    return (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead);
+    var bool = false;
+
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead) {
+
+        if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
+            bool = false;
+        }
+        else {
+            bool = true;
+        }
+    }
+
+    return bool;
 
 #define walk // Version 0
     argument[0].momentum_x += argument[0].acceleration * argument[0].dir;
