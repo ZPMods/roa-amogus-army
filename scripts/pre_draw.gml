@@ -6,20 +6,6 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         continue;
     }
 
-    var speed = get_state_properties(amogus.state).speed;
-    var frame_timer_max = 60 / speed;
-
-    amogus.frame_timer ++;
-    if (amogus.frame_timer >= frame_timer_max) {
-        amogus.cur_anim_frame++;
-        
-        if (amogus.cur_anim_frame >= get_state_properties(amogus.state).frameCount) {
-            amogus.cur_anim_frame = 0;
-        }
-
-        amogus.frame_timer = 0;
-    }
-
     // Render an amogus
     lib_draw_sprite("amogus_mainColor_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.mainCol});
     lib_draw_sprite("amogus_secondColor_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.secondCol});
@@ -81,14 +67,5 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         alpha = params.alpha
     }
     draw_sprite_ext(sprite, subimg, x, y, xscale, yscale, rot, col, alpha)
-
-#define get_state_properties // Version 0
-    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
-        var state_property = state_properties[state_property_i];
-
-        if (state_property.state == argument[0]) {
-            return state_property;
-        }
-    }
 // DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
 // #endregion

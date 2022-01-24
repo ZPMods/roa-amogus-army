@@ -7,7 +7,7 @@ init_done = false;
 
 hit_detected_done = false;
 hit_transfer_radius = 50;
-hit_resistance_time = 180;
+hit_resistance_time = 300;
 hit_ang_var = 7.5;
 hit_force_var = 1;
 dead_rot_speed = 12;

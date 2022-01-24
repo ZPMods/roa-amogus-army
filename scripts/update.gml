@@ -7,7 +7,7 @@ if (!init_done) {
 }
 
 // UPDATE
-// Army IA
+// Army behavior
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
@@ -15,6 +15,28 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         continue;
     }
 
+    // ANIM STUFF -----------
+    // Take care of everything about frame timer in update
+    // So that it stops when in pause
+    var anim_speed = get_state_properties(amogus.state).speed;
+    var frame_timer_max = 60 / anim_speed;
+
+    // Pause anims during hitpause
+    if (amogus.hitpause_timer <= 0) {
+        amogus.frame_timer ++;
+    }
+
+    if (amogus.frame_timer >= frame_timer_max) {
+        amogus.cur_anim_frame++;
+        
+        if (amogus.cur_anim_frame >= get_state_properties(amogus.state).frameCount) {
+            amogus.cur_anim_frame = 0;
+        }
+
+        amogus.frame_timer = 0;
+    }
+
+    // IA STUFF -----------
     // HITPAUSE
     if (amogus.hitpause_timer > 0) {
         amogus.hitpause_timer --;
@@ -514,6 +536,15 @@ else if (hit_detected_done) {
     }
 
     argument[0].hit_recently_timer = hit_resistance_time;
+
+#define get_state_properties // Version 0
+    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
+        var state_property = state_properties[state_property_i];
+
+        if (state_property.state == argument[0]) {
+            return state_property;
+        }
+    }
 
 #define set_state // Version 0
     if (argument[0].state != argument[1]) {
