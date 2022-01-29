@@ -116,7 +116,8 @@ hat_names = [
     //"mini_crewmate"
     "young_sprout",
     "knight_horns",
-    "headslug"
+    "headslug",
+    "imp"
 ]
 
 // All sprites
