@@ -41,6 +41,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     // HITPAUSE
     if (amogus.hitpause_timer > 0) {
         amogus.hitpause_timer --;
+        set_state(amogus, "hurt");
         continue;
     }
 
@@ -218,6 +219,8 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             amogus.x = room_width / 2 + rand(army_item_i, -150, 150, true);
             amogus.y = 0;
             amogus.tumble = true;
+
+            amogus.momentum_x *= 0.75;
         }
     }
 
