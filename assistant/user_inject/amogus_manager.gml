@@ -154,7 +154,7 @@
 #define should_walk {
     var bool = false;
     
-    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead) {
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble) {
 
         if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
             bool = false;
@@ -211,8 +211,9 @@
 }
 
 #define momentum_to_point {
-    var dist = argument[0] - argument[1];
-    print(dist);
+    var dist = argument[1] - argument[2];
+    var momentum = dist/30 + rand(i, -1.0, 1.0, false);
+    return -momentum;
 }
 
 #define rand {

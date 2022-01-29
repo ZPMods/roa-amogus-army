@@ -45,7 +45,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 
     // Friction
-    amogus.momentum_x *= amogus.on_ground ? ground_friction : air_friction;
+    amogus.momentum_x *= amogus.on_ground ? ground_friction : amogus.tumble ? 1 : air_friction;
 
     // Focused timer
     if (amogus.focused_timer <= 0 && amogus.focused) {
@@ -143,7 +143,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             if (amogus.tumble == true) {
                 amogus.tumble = false;
                 amogus.heavy_land = true;
-                landlag_mult = 2;
+                landlag_mult = 1;
 
                 // Deal damage
                 deal_damage(amogus);
@@ -183,7 +183,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 
     // In air
     if (!amogus.on_ground) {
-        if (amogus.momentum_y > 0) {
+        if (amogus.momentum_y > 0 || amogus.tumble) {
             amogus.fall_time++;
         }
 
@@ -346,12 +346,10 @@ if (owner.hit_player_obj > 0 && owner.hit_player_obj.hitpause && owner.hit_playe
         // On hit enemy
         hit_enemy_detected_done = true;
         last_hit_enemy = owner.hit_player_obj;
-        print(last_hit_enemy);
     }
 }
 else if (hit_enemy_detected_done) {
     hit_enemy_detected_done = false;
-    print("clean");
 }
 
 // TRACK LAST HIT ENEMIES POS
@@ -365,12 +363,32 @@ if (last_hit_enemy > 0 && last_hit_enemy.state == PS_RESPAWN) {
     if (!dead_enemy_detected_done) {
         dead_enemy_detected_done = true;
         
+        var spawn_side = respawn_x < stage_center_x ? -1 : 1;
+        var above_stage = false;
+
+        if (respawn_x > stage_center_x - get_stage_data(SD_WIDTH)/2 && respawn_x < stage_center_x + get_stage_data(SD_WIDTH)/2) {
+            above_stage = true;
+        }
+
+        var target_x = stage_center_x + get_stage_data(SD_WIDTH)/2 * spawn_side;
+        if (above_stage) {
+            target_x = respawn_x;
+        }
+
+        var target_y = stage_center_y;
+        if (respawn_y < stage_center_y) {
+            target_y = respawn_y;
+
+            if (!above_stage) {
+                target_x = stage_center_x;
+            }
+        }
+
         // On kill
-        for (i=0; i<base_amogus; i++) {
-            var spawn_side = respawn_x < stage_center_x ? -1 : 1;
-            momentum_to_point(respawn_x, stage_center_x + get_stage_data(SD_WIDTH)/2 * spawn_side);
-            momentum_to_point(respawn_y, stage_center_y);
-            new_random_amogus(i, respawn_x+rand(i, -50, 50, false), respawn_y, rand(i, -1.0, 1.0, false), rand(i, -15.0, -20.0, false), base_hp+1, true);
+        for (i=0; i<amogus_on_kill; i++) {
+            var momentum_x = momentum_to_point(i, respawn_x, target_x) * 0.5;
+            var momentum_y = momentum_to_point(i+10, respawn_y, target_y);
+            new_random_amogus(i, respawn_x+rand(i, -30, 30, false), respawn_y, momentum_x, momentum_y, base_hp+1, true);
         }
 
     }
@@ -514,7 +532,7 @@ else if (dead_enemy_detected_done) {
 #define should_walk // Version 0
     var bool = false;
 
-    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead) {
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble) {
 
         if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
             bool = false;
@@ -567,8 +585,9 @@ else if (dead_enemy_detected_done) {
     argument[0].hit_recently_timer = hit_resistance_time;
 
 #define momentum_to_point // Version 0
-    var dist = argument[0] - argument[1];
-    print(dist);
+    var dist = argument[1] - argument[2];
+    var momentum = dist/30 + rand(i, -1.0, 1.0, false);
+    return -momentum;
 
 #define get_state_properties // Version 0
     for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {

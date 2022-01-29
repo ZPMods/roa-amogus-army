@@ -26,7 +26,7 @@ dead_rot_speed = 12;
 
 base_amogus = 3;
 amogus_on_kill = 3;
-max_amogus = 10;
+max_amogus = 15;
 
 divider = 10
 
