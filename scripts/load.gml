@@ -4,15 +4,30 @@ max_run_dist = 999999999;
 
 // VARIABLES
 init_done = false;
+stage_center_x = get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH)/2;
+stage_center_y = get_stage_data(SD_Y_POS);
 
-hit_detected_done = false;
+got_hit_detected_done = false;
+hit_enemy_detected_done = false;
+dead_enemy_detected_done = false;
+last_hit_enemy = noone;
+
+base_hp = 3;
+
+respawn_x = 0;
+respawn_y = 0;
+
 hit_transfer_radius = 50;
 hit_resistance_time = 300;
 hit_ang_var = 7.5;
 hit_force_var = 1;
+
 dead_rot_speed = 12;
 
+base_amogus = 3;
+amogus_on_kill = 3;
 max_amogus = 10;
+
 divider = 10
 
 // Affected by divider
