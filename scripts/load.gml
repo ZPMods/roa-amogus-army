@@ -117,11 +117,17 @@ hat_names = [
     "none",
     "post_it",
     "bear_ears",
-    //"mini_crewmate"
+    //"mini_crewmate",
     "young_sprout",
     "knight_horns",
     "headslug",
-    "imp"
+    "imp",
+    "frog_hat",
+    "bakugo_mask",
+    "tree",
+    "jinx_hair",
+    "egg",
+    "heart"
 ]
 
 // All sprites
