@@ -9,7 +9,7 @@
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
-                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0 }; // Other
+                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0, sitting: false }; // Other
     
     // VISUAL
     // Set colors

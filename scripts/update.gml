@@ -73,7 +73,17 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             if (amogus.is_walking) {
                 amogus.is_walking = false;
 
+                if (pct(army_item_i, chance_to_sit)) {
+                    amogus.sitting = true;
+                }
+                else {
+                    amogus.sitting = false;
+                }
+
                 amogus.wait_timer = rand(army_item_i, min_unfocused_wait_time, max_unfocused_wait_time, true);
+                amogus.wait_timer *= amogus.sitting ? 10 : 1;
+                amogus.unfocused_timer += amogus.wait_timer;
+                prints(amogus.wait_timer, "unfocused:", amogus.unfocused_timer, "sitting:", amogus.sitting);
             }
         }
 
@@ -87,6 +97,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         // On focus change
         if (!amogus.focused) {
             amogus.focused = true;
+            amogus.sitting = false;
             randomize_walk_values(amogus);
         }
 
@@ -245,7 +256,12 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
                     set_state(amogus, "land");
                 }
             } else {
-                set_state(amogus, "idle");
+                if (amogus.sitting) {
+                    set_state(amogus, "sit");
+                }
+                else {
+                    set_state(amogus, "idle");
+                }
             }
         }
     }
@@ -403,6 +419,15 @@ else if (dead_enemy_detected_done) {
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
+#define prints // Version 0
+    // Prints each parameter to console, separated by spaces.
+    var _out_string = string(argument[0])
+    for (var i=1; i<argument_count; i++) {
+        _out_string += " "
+        _out_string += string(argument[i])
+    }
+    print(_out_string)
+
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;
@@ -414,7 +439,7 @@ else if (dead_enemy_detected_done) {
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
-                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0 }; // Other
+                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0, sitting: false }; // Other
 
     // VISUAL
     // Set colors

@@ -24,7 +24,7 @@ hit_force_var = 1;
 
 dead_rot_speed = 12;
 
-base_amogus = 3;
+base_amogus = 1;
 amogus_on_kill = 3;
 max_amogus = 15;
 
@@ -68,6 +68,7 @@ air_friction = 0.99;
 gravity = 0.2;
 fall_speed = 9.81;
 chance_to_lose_focus = 0.33;
+chance_to_sit = 0.5;
 
 
 // Army
@@ -92,13 +93,14 @@ amogus_colors = [
 // States setup
 state_properties = [
     { state: "idle", speed: 3, frameCount: 2 },
+    { state: "sit", speed: 1, frameCount: 1 },
     { state: "run", speed: 12, frameCount: 6 },
     { state: "rise", speed: 15, frameCount: 2 },
     { state: "fall", speed: 15, frameCount: 2 },
-    { state: "land", speed: 12, frameCount: 1 },
+    { state: "land", speed: 1, frameCount: 1 },
     { state: "tumble", speed: 20, frameCount: 4 },
-    { state: "heavyland", speed: 12, frameCount: 1 },
-    { state: "hurt", speed: 12, frameCount: 1 },
+    { state: "heavyland", speed: 1, frameCount: 1 },
+    { state: "hurt", speed: 1, frameCount: 1 },
     { state: "dead", speed: 16, frameCount: 4 }
 ];
 
