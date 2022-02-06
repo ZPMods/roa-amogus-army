@@ -33,6 +33,10 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         if (amogus.cur_anim_frame >= get_state_properties(amogus.state).frameCount) {
             if (amogus.stop_forced_on_end && amogus.forced_timer > 0) {
                 amogus.forced_timer = 0;
+
+                if (amogus.is_taunting) {
+                    amogus.is_taunting = false;
+                }
             }
             else {
                 amogus.cur_anim_frame = 0;
@@ -94,7 +98,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             }
         }
 
-        if (amogus.wait_timer <= 0 && amogus.walk_timer <= 0 && amogus.land_timer <= 0 && amogus.jumpsquat_timer <= 0 && amogus.on_ground) {
+        if (amogus.wait_timer <= 0 && amogus.walk_timer <= 0 && amogus.land_timer <= 0 && amogus.jumpsquat_timer <= 0 && amogus.on_ground && !amogus.is_taunting) {
             randomize_dir(amogus);
             amogus.walk_timer = rand(army_item_i, min_unfocused_walk_time, max_unfocused_walk_time, true);
         }
@@ -338,9 +342,26 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             amogus.forced_timer--;
         }
 
-        if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist) {
+        if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist && !amogus.is_taunting) {
             amogus.no_jump_timer--;
         } 
+    }
+
+    // TAUNT
+    if (state == "taunt") {
+        if (!amogus.taunt_detected_done) {
+            amogus.taunt_detected_done = true;
+
+            if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0) {
+                if (pct(army_item_i, amogus.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
+                    force_state(amogus, "tauntPenguinDance", 0);
+                    amogus.is_taunting = true;
+                }
+            }
+        }
+    }
+    else if (amogus.taunt_detected_done) {
+        amogus.taunt_detected_done = false;
     }
 }
 
@@ -459,9 +480,10 @@ else if (dead_enemy_detected_done) {
     var new_amogus = {  x: argument[1], y: argument[2], momentum_x: argument[3], momentum_y: argument[4], next_to_owner: false, // Position
                         state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", forced_timer: 0, stop_forced_on_end: false, // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
-                        on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: 0, //Air
+                        on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
-                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0, sitting: false }; // Other
+                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
+                        taunt_detected_done: false, is_taunting: false }; // Other
 
     // VISUAL
     // Set colors
@@ -611,7 +633,7 @@ else if (dead_enemy_detected_done) {
 #define should_walk // Version 0
     var bool = false;
 
-    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].jumpsquat_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble) {
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].jumpsquat_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble && !argument[0].is_taunting) {
 
         if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
             bool = false;

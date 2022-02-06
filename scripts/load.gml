@@ -12,6 +12,9 @@ hit_enemy_detected_done = false;
 dead_enemy_detected_done = false;
 last_hit_enemy = noone;
 
+focused_chance_to_taunt = 0.9;
+unfocused_chance_to_taunt = 0.5;
+
 base_hp = 3;
 
 respawn_x = 0;
@@ -43,6 +46,8 @@ max_jump_height = 9.0;
 min_nojump_time = 60;
 max_nojump_time = 120;
 
+chance_to_jump = 0.5;
+
 jumpsquat_time = 10;
 
 x_min_stop_dist = 40;
@@ -65,13 +70,13 @@ max_unfocused_walk_time = 60;
 min_unfocused_wait_time = 60;
 max_unfocused_wait_time = 120;
 
+chance_to_lose_focus = 0.33;
+
 ground_friction = 0.9;
 air_friction = 0.99;
 gravity = 0.2;
 fall_speed = 9.81;
-chance_to_lose_focus = 0.33;
 chance_to_sit = 0.25;
-chance_to_jump = 0.5;
 
 
 // Army
@@ -106,7 +111,8 @@ state_properties = [
     { state: "tumble", speed: 20, frameCount: 4 },
     { state: "heavyland", speed: 1, frameCount: 1 },
     { state: "hurt", speed: 1, frameCount: 1 },
-    { state: "dead", speed: 16, frameCount: 4 }
+    { state: "dead", speed: 16, frameCount: 4 },
+    { state: "tauntPenguinDance", speed: 10, frameCount: 69 }
 ];
 
 // Spritesheets setup

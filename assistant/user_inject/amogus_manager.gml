@@ -7,9 +7,10 @@
     var new_amogus = {  x: argument[1], y: argument[2], momentum_x: argument[3], momentum_y: argument[4], next_to_owner: false, // Position
                         state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", forced_timer: 0, stop_forced_on_end: false, // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
-                        on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: 0, //Air
+                        on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
-                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0, sitting: false }; // Other
+                        focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
+                        taunt_detected_done: false, is_taunting: false }; // Other
     
     // VISUAL
     // Set colors
@@ -187,7 +188,7 @@
 #define should_walk {
     var bool = false;
     
-    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].jumpsquat_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble) {
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].jumpsquat_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble && !argument[0].is_taunting) {
 
         if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
             bool = false;
