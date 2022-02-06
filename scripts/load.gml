@@ -43,6 +43,8 @@ max_jump_height = 9.0;
 min_nojump_time = 60;
 max_nojump_time = 120;
 
+jumpsquat_time = 10;
+
 x_min_stop_dist = 40;
 x_max_stop_dist = 100;
 
@@ -94,11 +96,13 @@ amogus_colors = [
 // States setup
 state_properties = [
     { state: "idle", speed: 3, frameCount: 2 },
+    { state: "idleToSit", speed: 8, frameCount: 3 },
     { state: "sit", speed: 1, frameCount: 1 },
     { state: "run", speed: 12, frameCount: 6 },
     { state: "rise", speed: 15, frameCount: 2 },
     { state: "fall", speed: 15, frameCount: 2 },
     { state: "land", speed: 1, frameCount: 1 },
+    { state: "jumpsquat", speed: 1, frameCount: 1 },
     { state: "tumble", speed: 20, frameCount: 4 },
     { state: "heavyland", speed: 1, frameCount: 1 },
     { state: "hurt", speed: 1, frameCount: 1 },

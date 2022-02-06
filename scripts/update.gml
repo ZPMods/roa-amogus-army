@@ -31,7 +31,13 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         amogus.cur_anim_frame++;
         
         if (amogus.cur_anim_frame >= get_state_properties(amogus.state).frameCount) {
-            amogus.cur_anim_frame = 0;
+            if (amogus.stop_forced_on_end && amogus.forced_timer > 0) {
+                prints(amogus.forced_timer, amogus.stop_forced_on_end);
+                amogus.forced_timer = 0;
+            }
+            else {
+                amogus.cur_anim_frame = 0;
+            }
         }
 
         amogus.frame_timer = 0;
@@ -74,6 +80,9 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
                 amogus.is_walking = false;
 
                 if (pct(army_item_i, chance_to_sit)) {
+                    if (!amogus.sitting) {
+                        force_state(amogus, "idleToSit", 0);
+                    }
                     amogus.sitting = true;
                 }
                 else {
@@ -86,7 +95,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             }
         }
 
-        if (amogus.wait_timer <= 0 && amogus.walk_timer <= 0 && amogus.land_timer <= 0 && amogus.on_ground) {
+        if (amogus.wait_timer <= 0 && amogus.walk_timer <= 0 && amogus.land_timer <= 0 && amogus.jumpsquat_timer <= 0 && amogus.on_ground) {
             randomize_dir(amogus);
             amogus.walk_timer = rand(army_item_i, min_unfocused_walk_time, max_unfocused_walk_time, true);
         }
@@ -101,7 +110,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         }
 
         // Look at player
-        if (amogus.dir != dir_to_owner(amogus) && amogus.on_ground && amogus.land_timer <= 0) {
+        if (amogus.dir != dir_to_owner(amogus) && amogus.on_ground && amogus.land_timer <= 0 && amogus.jumpsquat_timer <= 0) {
             amogus.dir = dir_to_owner(amogus);
         }
 
@@ -178,7 +187,8 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         // Jump
         if (amogus.no_jump_timer <= 0 && amogus.focused) {
             if (pct(army_item_i, chance_to_jump)) {
-                jump(amogus);
+                amogus.jumpsquat_timer = jumpsquat_time;
+                force_state(amogus, "jumpsquat", jumpsquat_time);
                 amogus.no_jump_timer = rand(army_item_i, min_nojump_time, max_nojump_time, true);
             }
             else {
@@ -247,76 +257,92 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     amogus.y += amogus.momentum_y;
 
     // Anim states
-    if (amogus.on_ground) {
-        if (should_walk(amogus) && abs(amogus.momentum_x) > 0.2) {
-            set_state(amogus, "run");
-        }
-        else {
-            // Land
-            if (amogus.land_timer > 0) {
-                // Heavy land
-                if (amogus.heavy_land) {
-                    set_state(amogus, "heavyland");
-                }
-                else {
-                    set_state(amogus, "land");
-                }
-            } else {
-                if (amogus.sitting) {
-                    set_state(amogus, "sit");
-                }
-                else {
-                    set_state(amogus, "idle");
-                }
-            }
-        }
-    }
-    else {
-        // Tumble
-        if (amogus.dead == true) {
-            set_state(amogus, "dead");
-        }
-        else if (amogus.tumble == true) {
-            set_state(amogus, "tumble");
-        }
-        else {
-            if (amogus.momentum_y > 0) {
-                set_state(amogus, "fall");
+    if (amogus.forced_timer <= 0) {
+        if (amogus.on_ground) {
+            if (should_walk(amogus) && abs(amogus.momentum_x) > 0.2) {
+                set_state(amogus, "run");
             }
             else {
-                set_state(amogus, "rise");
+                // Land
+                if (amogus.land_timer > 0) {
+                    // Heavy land
+                    if (amogus.heavy_land) {
+                        set_state(amogus, "heavyland");
+                    }
+                    else {
+                        set_state(amogus, "land");
+                    }
+                } else {
+                    if (amogus.sitting) {
+                        set_state(amogus, "sit");
+                    }
+                    else {
+                        set_state(amogus, "idle");
+                    }
+                }
+            }
+        }
+        else {
+            // Tumble
+            if (amogus.dead == true) {
+                set_state(amogus, "dead");
+            }
+            else if (amogus.tumble == true) {
+                set_state(amogus, "tumble");
+            }
+            else {
+                if (amogus.momentum_y > 0) {
+                    set_state(amogus, "fall");
+                }
+                else {
+                    set_state(amogus, "rise");
+                }
             }
         }
     }
 
     // Timers
-    if (amogus.land_timer > 0 && !amogus.dead) {
-        amogus.land_timer--;
+    if (!amogus.dead) {
+        if (amogus.land_timer > 0) {
+            amogus.land_timer--;
+        }
+
+        if (amogus.jumpsquat_timer > 0) {
+            amogus.jumpsquat_timer--;
+        }
+        else if (amogus.jumpsquat_timer > -1) {
+            jump(amogus);
+            amogus.jumpsquat_timer = -1;
+        }
+
+        if (amogus.wait_timer > 0) {
+            amogus.wait_timer--;
+        }
+        
+        if (amogus.focused_timer > 0) {
+            amogus.unfocused_timer--;
+        } 
+
+        if (amogus.unfocused_timer > 0) {
+            amogus.unfocused_timer--;
+        } 
+
+        if (amogus.walk_timer > 0) {
+            amogus.walk_timer--;
+        } 
+
+        if (amogus.hit_recently_timer > 0) {
+            amogus.hit_recently_timer--;
+        } 
+        
+        if (amogus.forced_timer > 0) {
+            amogus.forced_timer--;
+        }
+
+        if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist) {
+            amogus.no_jump_timer--;
+        } 
     }
-
-    if (amogus.wait_timer > 0 && !amogus.dead) {
-        amogus.wait_timer--;
-    }
-    
-    if (amogus.focused_timer > 0 && !amogus.dead) {
-        amogus.unfocused_timer--;
-    } 
-
-    if (amogus.unfocused_timer > 0 && !amogus.dead) {
-        amogus.unfocused_timer--;
-    } 
-
-    if (amogus.walk_timer > 0 && !amogus.dead) {
-        amogus.walk_timer--;
-    } 
-
-    if (amogus.hit_recently_timer > 0 && !amogus.dead) {
-        amogus.hit_recently_timer--;
-    } 
-    
-    if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist && !amogus.dead) {
-        amogus.no_jump_timer--;
-    } 
 }
 
 // OWNER GOT HIT
@@ -425,6 +451,15 @@ else if (dead_enemy_detected_done) {
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
+#define prints // Version 0
+    // Prints each parameter to console, separated by spaces.
+    var _out_string = string(argument[0])
+    for (var i=1; i<argument_count; i++) {
+        _out_string += " "
+        _out_string += string(argument[i])
+    }
+    print(_out_string)
+
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;
@@ -432,9 +467,9 @@ else if (dead_enemy_detected_done) {
 
     // Init amogus
     var new_amogus = {  x: argument[1], y: argument[2], momentum_x: argument[3], momentum_y: argument[4], next_to_owner: false, // Position
-                        state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", // Visual
+                        state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", forced_timer: 0, stop_forced_on_end: false, // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
-                        on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, //Air
+                        on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: 0, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 0, sitting: false }; // Other
 
@@ -515,6 +550,36 @@ else if (dead_enemy_detected_done) {
 #define pct // Version 0
     return random_func(argument[0], 1.00, false) <= argument[1];
 
+#define get_state_properties // Version 0
+    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
+        var state_property = state_properties[state_property_i];
+
+        if (state_property.state == argument[0]) {
+            return state_property;
+        }
+    }
+
+#define set_state // Version 0
+    if (argument[0].state != argument[1]) {
+        argument[0].state = argument[1];
+    }
+
+#define force_state // Version 0
+    var amogus = argument[0];
+    var state = argument[1];
+    var time = argument[2];
+
+    if (time <= 0) {
+        amogus.forced_timer = 999;
+        amogus.stop_forced_on_end = true;
+        print(amogus.stop_forced_on_end);
+    }
+    else {
+        amogus.forced_timer = time;
+    }
+
+    set_state(amogus, state);
+
 #define collision_at_point // Version 0
     if (collision_point(argument[0], argument[1], asset_get("par_block"), false, true) ||
     collision_point(argument[0], argument[1], asset_get("par_jumpthrough"), false, true)) {
@@ -557,7 +622,7 @@ else if (dead_enemy_detected_done) {
 #define should_walk // Version 0
     var bool = false;
 
-    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble) {
+    if (argument[0].on_ground && argument[0].land_timer <= 0 && argument[0].jumpsquat_timer <= 0 && argument[0].wait_timer <= 0 && !argument[0].dead && !argument[0].tumble) {
 
         if ((argument[0].x <= get_stage_data(SD_X_POS) + argument[0].x_stop_dist && argument[0].dir == -1) || (argument[0].x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - argument[0].x_stop_dist && argument[0].dir == 1)) {
             bool = false;
@@ -613,19 +678,5 @@ else if (dead_enemy_detected_done) {
     var dist = argument[1] - argument[2];
     var momentum = dist/30 + rand(i, -1.0, 1.0, false);
     return -momentum;
-
-#define get_state_properties // Version 0
-    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
-        var state_property = state_properties[state_property_i];
-
-        if (state_property.state == argument[0]) {
-            return state_property;
-        }
-    }
-
-#define set_state // Version 0
-    if (argument[0].state != argument[1]) {
-        argument[0].state = argument[1];
-    }
 // DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
 // #endregion
