@@ -83,7 +83,6 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
                 amogus.wait_timer = rand(army_item_i, min_unfocused_wait_time, max_unfocused_wait_time, true);
                 amogus.wait_timer *= amogus.sitting ? 10 : 1;
                 amogus.unfocused_timer += amogus.wait_timer;
-                prints(amogus.wait_timer, "unfocused:", amogus.unfocused_timer, "sitting:", amogus.sitting);
             }
         }
 
@@ -178,8 +177,15 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 
         // Jump
         if (amogus.no_jump_timer <= 0 && amogus.focused) {
-            jump(amogus);
-            amogus.no_jump_timer = rand(army_item_i, min_nojump_time, max_nojump_time, true);
+            if (pct(army_item_i, chance_to_jump)) {
+                jump(amogus);
+                amogus.no_jump_timer = rand(army_item_i, min_nojump_time, max_nojump_time, true);
+            }
+            else {
+                amogus.no_jump_timer = rand(army_item_i, min_nojump_time, max_nojump_time, true);
+                amogus.no_jump_timer /= 3;
+            }
+            
         } 
     }
     // Air start
@@ -419,15 +425,6 @@ else if (dead_enemy_detected_done) {
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
-#define prints // Version 0
-    // Prints each parameter to console, separated by spaces.
-    var _out_string = string(argument[0])
-    for (var i=1; i<argument_count; i++) {
-        _out_string += " "
-        _out_string += string(argument[i])
-    }
-    print(_out_string)
-
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;

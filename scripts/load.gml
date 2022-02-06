@@ -24,7 +24,7 @@ hit_force_var = 1;
 
 dead_rot_speed = 12;
 
-base_amogus = 1;
+base_amogus = 3;
 amogus_on_kill = 3;
 max_amogus = 15;
 
@@ -68,7 +68,8 @@ air_friction = 0.99;
 gravity = 0.2;
 fall_speed = 9.81;
 chance_to_lose_focus = 0.33;
-chance_to_sit = 0.5;
+chance_to_sit = 0.25;
+chance_to_jump = 0.5;
 
 
 // Army
