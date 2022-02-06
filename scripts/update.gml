@@ -32,7 +32,6 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         
         if (amogus.cur_anim_frame >= get_state_properties(amogus.state).frameCount) {
             if (amogus.stop_forced_on_end && amogus.forced_timer > 0) {
-                prints(amogus.forced_timer, amogus.stop_forced_on_end);
                 amogus.forced_timer = 0;
             }
             else {
@@ -451,15 +450,6 @@ else if (dead_enemy_detected_done) {
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
-#define prints // Version 0
-    // Prints each parameter to console, separated by spaces.
-    var _out_string = string(argument[0])
-    for (var i=1; i<argument_count; i++) {
-        _out_string += " "
-        _out_string += string(argument[i])
-    }
-    print(_out_string)
-
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;
@@ -572,7 +562,6 @@ else if (dead_enemy_detected_done) {
     if (time <= 0) {
         amogus.forced_timer = 999;
         amogus.stop_forced_on_end = true;
-        print(amogus.stop_forced_on_end);
     }
     else {
         amogus.forced_timer = time;

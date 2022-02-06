@@ -112,7 +112,6 @@
     if (time <= 0) {
         amogus.forced_timer = 999;
         amogus.stop_forced_on_end = true;
-        print(amogus.stop_forced_on_end);
     }
     else {
         amogus.forced_timer = time;
