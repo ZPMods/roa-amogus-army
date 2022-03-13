@@ -24,6 +24,14 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 }
 
+for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
+    var ghost = ghosts[ghost_i];
+
+    lib_draw_sprite("amogus_mainColor_ghost", ghost.cur_anim_frame, ghost.x, ghost.y, {xscale: ghost.dir, col: ghost.mainCol, alpha: ghost.opacity});
+    lib_draw_sprite("amogus_secondColor_ghost", ghost.cur_anim_frame, ghost.x, ghost.y, {xscale: ghost.dir, col: ghost.secondCol, alpha: ghost.opacity});
+    lib_draw_sprite("amogus_outline_ghost", ghost.cur_anim_frame, ghost.x, ghost.y, {xscale: ghost.dir, alpha: ghost.opacity});
+}
+
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.

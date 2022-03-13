@@ -365,6 +365,33 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 }
 
+// GHOSTS
+for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
+    var ghost = ghosts[ghost_i];
+
+    // ANIM STUFF -----------
+    // Take care of everything about frame timer in update
+    // So that it stops when in pause
+    var anim_speed = get_state_properties("ghost").speed;
+    var frame_timer_max = 60 / anim_speed;
+
+    ghost.frame_timer ++;
+
+    if (ghost.frame_timer >= frame_timer_max) {
+        ghost.cur_anim_frame++;
+        
+        if (ghost.cur_anim_frame >= get_state_properties("ghost").frameCount) {
+            ghost.cur_anim_frame = 0;
+        }
+
+        ghost.frame_timer = 0;
+    }
+
+    ghost.y -= ghost.speed;
+    //ghost.x += cos(ghost.cur_anim_frame);
+    //prints(ghost.cur_anim_frame, cos(ghost.cur_anim_frame));
+}
+
 // OWNER GOT HIT
 if (owner.state_cat == SC_HITSTUN && owner.state_timer == 0 && owner.hitpause) {
     if (!got_hit_detected_done) {
@@ -471,6 +498,15 @@ else if (dead_enemy_detected_done) {
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
+#define prints // Version 0
+    // Prints each parameter to console, separated by spaces.
+    var _out_string = string(argument[0])
+    for (var i=1; i<argument_count; i++) {
+        _out_string += " "
+        _out_string += string(argument[i])
+    }
+    print(_out_string)
+
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;
@@ -500,9 +536,9 @@ else if (dead_enemy_detected_done) {
     new_amogus.no_jump_timer = rand(argument[0], min_nojump_time, max_nojump_time, true);
 
     // Put in array
-    add_to_array(new_amogus);
+    add_to_army_array(new_amogus, army);
 
-#define add_to_array // Version 0
+#define add_to_army_array // Version 0
     for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         var army_item = army[army_item_i];
 
@@ -675,6 +711,7 @@ else if (dead_enemy_detected_done) {
             argument[0].tumble = true;
             argument[0].dead = true;
             argument[0].dead_x = argument[0].x;
+            new_ghost(argument[0].x, argument[0].y, argument[0].dir, argument[0].mainCol, argument[0].secondCol);
         }
 
         if (argument[0].dead) {
@@ -684,6 +721,24 @@ else if (dead_enemy_detected_done) {
     }
 
     argument[0].hit_recently_timer = hit_resistance_time;
+
+#define new_ghost // Version 0
+    var new_ghost = {  x: argument[0], y: argument[1], dir: argument[2], mainCol: argument[3], secondCol: argument[4], speed: 2.5, opacity: 0.5, cur_anim_frame: 0, frame_timer: 0 };
+
+    // Put in array
+    add_to_ghost_array(new_ghost, ghosts);
+
+#define add_to_ghost_array // Version 0
+    for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
+        var ghost = ghosts[ghost_i];
+
+        if (ghost == noone) {
+            ghosts[ghost_i] = argument[0];
+            return;
+        }
+    }
+
+    array_push(ghosts, argument[0]);
 
 #define momentum_to_point // Version 0
     var dist = argument[1] - argument[2];

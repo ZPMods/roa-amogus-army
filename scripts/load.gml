@@ -81,6 +81,7 @@ chance_to_sit = 0.25;
 
 // Army
 army = [];
+ghosts = [];
 
 // Colors
 amogus_colors = [
@@ -112,6 +113,7 @@ state_properties = [
     { state: "heavyland", speed: 1, frameCount: 1 },
     { state: "hurt", speed: 1, frameCount: 1 },
     { state: "dead", speed: 16, frameCount: 4 },
+    { state: "ghost", speed: 12, frameCount: 14 },
     { state: "tauntPenguinDance", speed: 10, frameCount: 69 }
 ];
 
