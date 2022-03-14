@@ -2,6 +2,8 @@
 if (!init_done) {
     init_done = true;
 
+    init_enums();
+print("init update");
     for (i=0; i<base_amogus; i++) {
         new_random_amogus(i, owner.x+rand(i, -50, 50, false), owner.y, 0.0, 0.0, base_hp, false);
     }
@@ -19,7 +21,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     // ANIM STUFF -----------
     // Take care of everything about frame timer in update
     // So that it stops when in pause
-    var anim_speed = get_state_properties(amogus.state).speed;
+    var anim_speed = amogus.state_properties.speed;
     var frame_timer_max = 60 / anim_speed;
 
     // Pause anims during hitpause
@@ -30,7 +32,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     if (amogus.frame_timer >= frame_timer_max) {
         amogus.cur_anim_frame++;
         
-        if (amogus.cur_anim_frame >= get_state_properties(amogus.state).frameCount) {
+        if (amogus.cur_anim_frame >= amogus.state_properties.frameCount) {
             if (amogus.stop_forced_on_end && amogus.forced_timer > 0) {
                 amogus.forced_timer = 0;
 
@@ -50,7 +52,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     // HITPAUSE
     if (amogus.hitpause_timer > 0) {
         amogus.hitpause_timer --;
-        set_state(amogus, "hurt");
+        set_state(amogus, states.hurt);
         continue;
     }
 
@@ -84,7 +86,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 
                 if (pct(army_item_i, chance_to_sit)) {
                     if (!amogus.sitting) {
-                        force_state(amogus, "idleToSit", 0);
+                        force_state(amogus, states.idleToSit, 0);
                     }
                     amogus.sitting = true;
                 }
@@ -191,7 +193,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         if (amogus.no_jump_timer <= 0 && amogus.focused) {
             if (pct(army_item_i, chance_to_jump)) {
                 amogus.jumpsquat_timer = jumpsquat_time;
-                force_state(amogus, "jumpsquat", jumpsquat_time);
+                force_state(amogus, states.jumpsquat, jumpsquat_time);
                 amogus.no_jump_timer = rand(army_item_i, min_nojump_time, max_nojump_time, true);
             }
             else {
@@ -263,24 +265,24 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     if (amogus.forced_timer <= 0) {
         if (amogus.on_ground) {
             if (should_walk(amogus) && abs(amogus.momentum_x) > 0.2) {
-                set_state(amogus, "run");
+                set_state(amogus, states.run);
             }
             else {
                 // Land
                 if (amogus.land_timer > 0) {
                     // Heavy land
                     if (amogus.heavy_land) {
-                        set_state(amogus, "heavyland");
+                        set_state(amogus, states.heavyland);
                     }
                     else {
-                        set_state(amogus, "land");
+                        set_state(amogus, states.land);
                     }
                 } else {
                     if (amogus.sitting) {
-                        set_state(amogus, "sit");
+                        set_state(amogus, states.sit);
                     }
                     else {
-                        set_state(amogus, "idle");
+                        set_state(amogus, states.idle);
                     }
                 }
             }
@@ -288,17 +290,17 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         else {
             // Tumble
             if (amogus.dead == true) {
-                set_state(amogus, "dead");
+                set_state(amogus, states.dead);
             }
             else if (amogus.tumble == true) {
-                set_state(amogus, "tumble");
+                set_state(amogus, states.tumble);
             }
             else {
                 if (amogus.momentum_y > 0) {
-                    set_state(amogus, "fall");
+                    set_state(amogus, states.fall);
                 }
                 else {
-                    set_state(amogus, "rise");
+                    set_state(amogus, states.rise);
                 }
             }
         }
@@ -348,13 +350,13 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 
     // TAUNT
-    if (state == "taunt") {
+    if (is_in_taunt_state(amogus)) {
         if (!amogus.taunt_detected_done) {
             amogus.taunt_detected_done = true;
 
             if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0) {
                 if (pct(army_item_i, amogus.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
-                    force_state(amogus, "tauntPenguinDance", 0);
+                    force_state(amogus, states.tauntPenguinDance, 0);
                     amogus.is_taunting = true;
                 }
             }
@@ -514,7 +516,8 @@ else if (dead_enemy_detected_done) {
 
     // Init amogus
     var new_amogus = {  x: argument[1], y: argument[2], momentum_x: argument[3], momentum_y: argument[4], next_to_owner: false, // Position
-                        state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", forced_timer: 0, stop_forced_on_end: false, // Visual
+                        state: states.idle, state_properties:get_state_properties(states.idle), cur_anim_frame: 0, frame_timer: 0, // Animation
+                        mainCol: c_white, secondCol: c_white, hat:hats.post_it, hat_properties:get_hat_properties(hats.post_it), forced_timer: 0, stop_forced_on_end: false, // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
@@ -523,13 +526,14 @@ else if (dead_enemy_detected_done) {
 
     // VISUAL
     // Set colors
-    var color = amogus_colors[random_func(argument[0], array_length(amogus_colors), true)];
+    var color = colors_properties[random_func(argument[0], array_length(colors_properties), true)];
     new_amogus.mainCol = color.mainCol;
     new_amogus.secondCol = color.secondCol;
 
     // Set hat
-    var hat = hat_names[random_func(argument[0], array_length(hat_names), true)];
-    new_amogus.hat = hat;
+    var hat_properties = hats_properties[random_func(argument[0], array_length(hats_properties), true)];
+    new_amogus.hat = hat_properties.hat;
+    new_amogus.hat_properties = hat_properties;
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -579,6 +583,24 @@ else if (dead_enemy_detected_done) {
 #define rand // Version 0
     return argument[1] + random_func(argument[0], argument[2] - argument[1], argument[3]);
 
+#define get_state_properties // Version 0
+    for (var state_property_i=0; state_property_i<array_length(states_properties); state_property_i++) {
+        var state_property = states_properties[state_property_i];
+
+        if (state_property.state == argument[0]) {
+            return state_property;
+        }
+    }
+
+#define get_hat_properties // Version 0
+    for (var hat_property_i=0; hat_property_i<array_length(hats_properties); hat_property_i++) {
+        var hat_property = hats_properties[hat_property_i];
+
+        if (hat_property.hat == argument[0]) {
+            return hat_property;
+        }
+    }
+
 #define try_to_lose_focus // Version 0
     if (pct(0, chance_to_lose_focus)) {
         randomize_unfocused_walk_values(argument[0]);
@@ -598,18 +620,10 @@ else if (dead_enemy_detected_done) {
 #define pct // Version 0
     return random_func(argument[0], 1.00, false) <= argument[1];
 
-#define get_state_properties // Version 0
-    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
-        var state_property = state_properties[state_property_i];
-
-        if (state_property.state == argument[0]) {
-            return state_property;
-        }
-    }
-
 #define set_state // Version 0
     if (argument[0].state != argument[1]) {
         argument[0].state = argument[1];
+        argument[0].state_properties = get_state_properties(argument[1]);
     }
 
 #define force_state // Version 0
@@ -626,6 +640,19 @@ else if (dead_enemy_detected_done) {
     }
 
     set_state(amogus, state);
+
+#define is_in_taunt_state // Version 0
+    var amogus = argument[0];
+    switch (amogus.state) {
+        case states.tauntPenguinDance :
+        case states.tauntScan :
+            return true
+        break;
+
+        default:
+            return false;
+        break;
+    }
 
 #define collision_at_point // Version 0
     if (collision_point(argument[0], argument[1], asset_get("par_block"), false, true) ||
@@ -744,5 +771,68 @@ else if (dead_enemy_detected_done) {
     var dist = argument[1] - argument[2];
     var momentum = dist/30 + rand(i, -1.0, 1.0, false);
     return -momentum;
+
+#define init_enums // Version 0
+    // Roles
+    enum roles
+    {
+        crewmate,
+        impostor
+    }
+
+    // States
+    enum states
+    {
+        idle,
+        idleToSit,
+        sit,
+        run,
+        rise,
+        fall,
+        land,
+        jumpsquat,
+        tumble,
+        heavyland,
+        hurt,
+        dead,
+        ghost,
+        tauntPenguinDance,
+        tauntScan
+    }
+
+    // Hats
+    enum hats
+    {
+        none,
+        post_it,
+        bear_ears,
+        young_sprout,
+        knight_horns,
+        headslug,
+        imp,
+        frog_hat,
+        bakugo_mask,
+        tree,
+        jinx_hair,
+        egg,
+        heart
+    }
+
+    // Colors
+    enum colors
+    {
+        red,
+        blue,
+        green,
+        pink,
+        orange,
+        yellow,
+        black,
+        white,
+        purple,
+        brown,
+        cyan,
+        lime
+    }
 // DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
 // #endregion

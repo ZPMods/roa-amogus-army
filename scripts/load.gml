@@ -2,8 +2,69 @@ pet_w = 0;
 run_speed = 0;
 max_run_dist = 999999999;
 
+// ENUMS
+init_enums();
+
+// Roles properties
+roles_properties = [
+    { role: roles.crewmate }
+];
+
+// States properties
+states_properties = [
+    { state: states.idle,                  name: "idle",                   speed: 3,           frameCount: 2   },
+    { state: states.idleToSit,             name: "idleToSit",              speed: 8,           frameCount: 3   },
+    { state: states.sit,                   name: "sit",                    speed: 1,           frameCount: 1   },
+    { state: states.run,                   name: "run",                    speed: 12,          frameCount: 6   },
+    { state: states.rise,                  name: "rise",                   speed: 15,          frameCount: 2   },
+    { state: states.fall,                  name: "fall",                   speed: 15,          frameCount: 2   },
+    { state: states.land,                  name: "land",                   speed: 1,           frameCount: 1   },
+    { state: states.jumpsquat,             name: "jumpsquat",              speed: 1,           frameCount: 1   },
+    { state: states.tumble,                name: "tumble",                 speed: 20,          frameCount: 4   },
+    { state: states.heavyland,             name: "heavyland",              speed: 1,           frameCount: 1   },
+    { state: states.hurt,                  name: "hurt",                   speed: 1,           frameCount: 1   },
+    { state: states.dead,                  name: "dead",                   speed: 16,          frameCount: 4   },
+    { state: states.ghost,                 name: "ghost",                  speed: 12,          frameCount: 14  },
+    { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,          frameCount: 69  },
+    { state: states.tauntScan,             name: "tauntScan",              speed: 12,          frameCount: 15  }
+];
+
+// Hats properties
+hats_properties = [
+    { hat: hats.none,              name: "none"         },
+    { hat: hats.post_it,           name: "post_it"      },
+    { hat: hats.bear_ears,         name: "bear_ears"    },
+    { hat: hats.young_sprout,      name: "young_sprout" },
+    { hat: hats.knight_horns,      name: "knight_horns" },
+    { hat: hats.headslug,          name: "headslug"     },
+    { hat: hats.imp,               name: "imp"          },
+    { hat: hats.frog_hat,          name: "frog_hat"     },
+    { hat: hats.bakugo_mask,       name: "bakugo_mask"  },
+    { hat: hats.tree,              name: "tree"         },
+    { hat: hats.jinx_hair,         name: "jinx_hair"    },
+    { hat: hats.egg,               name: "egg"          },
+    { hat: hats.heart,             name: "heart"        }
+]
+
+// Colors properties
+colors_properties = [
+    { color: colors.red,       mainCol: make_colour_rgb(197, 17, 17),      secondCol: make_colour_rgb(122, 8, 56)      },       
+    { color: colors.blue,      mainCol: make_colour_rgb(19, 46, 209),      secondCol: make_colour_rgb(9, 21, 142)      },      
+    { color: colors.green,     mainCol: make_colour_rgb(17, 127, 45),      secondCol: make_colour_rgb(10, 77, 46)      },         
+    { color: colors.pink,      mainCol: make_colour_rgb(237, 84, 186),     secondCol: make_colour_rgb(171, 43, 173)    },      
+    { color: colors.orange,    mainCol: make_colour_rgb(237, 125, 13),     secondCol: make_colour_rgb(179, 62, 21)     },        
+    { color: colors.yellow,    mainCol: make_colour_rgb(245, 245, 87),     secondCol: make_colour_rgb(194, 135, 34)    },        
+    { color: colors.black,     mainCol: make_colour_rgb(63, 71, 78),       secondCol: make_colour_rgb(30, 31, 38)      },         
+    { color: colors.white,     mainCol: make_colour_rgb(214, 224, 240),    secondCol: make_colour_rgb(131, 148, 191)   },         
+    { color: colors.purple,    mainCol: make_colour_rgb(107, 47, 187),     secondCol: make_colour_rgb(59, 23, 124)     },        
+    { color: colors.brown,     mainCol: make_colour_rgb(113, 73, 30),      secondCol: make_colour_rgb(94, 38, 21)      },         
+    { color: colors.cyan,      mainCol: make_colour_rgb(56, 222, 220),     secondCol: make_colour_rgb(36, 168, 190)    },      
+    { color: colors.lime,      mainCol: make_colour_rgb(80, 239, 57),      secondCol: make_colour_rgb(21, 167, 66)     }      
+]
+
 // VARIABLES
 init_done = false;
+
 stage_center_x = get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH)/2;
 stage_center_y = get_stage_data(SD_Y_POS);
 
@@ -27,7 +88,7 @@ hit_force_var = 1;
 
 dead_rot_speed = 12;
 
-base_amogus = 3;
+base_amogus = 1;
 amogus_on_kill = 3;
 max_amogus = 15;
 
@@ -83,40 +144,6 @@ chance_to_sit = 0.25;
 army = [];
 ghosts = [];
 
-// Colors
-amogus_colors = [
-    { name: "red", mainCol: make_colour_rgb(197, 17, 17), secondCol: make_colour_rgb(122, 8, 56) },
-    { name: "blue", mainCol: make_colour_rgb(19, 46, 209), secondCol: make_colour_rgb(9, 21, 142) },
-    { name: "green", mainCol: make_colour_rgb(17, 127, 45), secondCol: make_colour_rgb(10, 77, 46) },
-    { name: "pink", mainCol: make_colour_rgb(237, 84, 186), secondCol: make_colour_rgb(171, 43, 173) },
-    { name: "orange", mainCol: make_colour_rgb(237, 125, 13), secondCol: make_colour_rgb(179, 62, 21) },
-    { name: "yellow", mainCol: make_colour_rgb(245, 245, 87), secondCol: make_colour_rgb(194, 135, 34) },
-    { name: "black", mainCol: make_colour_rgb(63, 71, 78), secondCol: make_colour_rgb(30, 31, 38) },
-    { name: "white", mainCol: make_colour_rgb(214, 224, 240), secondCol: make_colour_rgb(131, 148, 191) },
-    { name: "purple", mainCol: make_colour_rgb(107, 47, 187), secondCol: make_colour_rgb(59, 23, 124) },
-    { name: "brown", mainCol: make_colour_rgb(113, 73, 30), secondCol: make_colour_rgb(94, 38, 21) },
-    { name: "cyan", mainCol: make_colour_rgb(56, 222, 220), secondCol: make_colour_rgb(36, 168, 190) },
-    { name: "lime", mainCol: make_colour_rgb(80, 239, 57), secondCol: make_colour_rgb(21, 167, 66) }
-];
-
-// States setup
-state_properties = [
-    { state: "idle", speed: 3, frameCount: 2 },
-    { state: "idleToSit", speed: 8, frameCount: 3 },
-    { state: "sit", speed: 1, frameCount: 1 },
-    { state: "run", speed: 12, frameCount: 6 },
-    { state: "rise", speed: 15, frameCount: 2 },
-    { state: "fall", speed: 15, frameCount: 2 },
-    { state: "land", speed: 1, frameCount: 1 },
-    { state: "jumpsquat", speed: 1, frameCount: 1 },
-    { state: "tumble", speed: 20, frameCount: 4 },
-    { state: "heavyland", speed: 1, frameCount: 1 },
-    { state: "hurt", speed: 1, frameCount: 1 },
-    { state: "dead", speed: 16, frameCount: 4 },
-    { state: "ghost", speed: 12, frameCount: 14 },
-    { state: "tauntPenguinDance", speed: 10, frameCount: 69 }
-];
-
 // Spritesheets setup
 amogus_parts = [
     "amogus_mainColor",
@@ -124,28 +151,10 @@ amogus_parts = [
     "amogus_outline"
 ];
 
-// Hats
-hat_names = [
-    "none",
-    "post_it",
-    "bear_ears",
-    //"mini_crewmate",
-    "young_sprout",
-    "knight_horns",
-    "headslug",
-    "imp",
-    "frog_hat",
-    "bakugo_mask",
-    "tree",
-    "jinx_hair",
-    "egg",
-    "heart"
-]
-
 // All sprites
 sprite_names = amogus_parts
-for(var i = 0; i < array_length(hat_names); i++) {
-	array_push(sprite_names, hat_names[i]);
+for(var i = 0; i < array_length(hats_properties); i++) {
+	array_push(sprite_names, hats_properties[i].name);
 }
 
 // foreach sprite
@@ -155,9 +164,77 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         continue;
     }
 
-    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
-        var state_property = state_properties[state_property_i];
+    for (var state_property_i=0; state_property_i<array_length(states_properties); state_property_i++) {
+        var state_property = states_properties[state_property_i];
 
-        sprite_change_offset(sprite_name + "_" + state_property.state, 32, 46);
+        sprite_change_offset(sprite_name + "_" + state_property.name, 32, 78);
     }
 }
+
+// #region vvv LIBRARY DEFINES AND MACROS vvv
+// DANGER File below this point will be overwritten! Generated defines and macros below.
+// Write NO-INJECT in a comment above this area to disable injection.
+#define init_enums // Version 0
+    // Roles
+    enum roles
+    {
+        crewmate,
+        impostor
+    }
+
+    // States
+    enum states
+    {
+        idle,
+        idleToSit,
+        sit,
+        run,
+        rise,
+        fall,
+        land,
+        jumpsquat,
+        tumble,
+        heavyland,
+        hurt,
+        dead,
+        ghost,
+        tauntPenguinDance,
+        tauntScan
+    }
+
+    // Hats
+    enum hats
+    {
+        none,
+        post_it,
+        bear_ears,
+        young_sprout,
+        knight_horns,
+        headslug,
+        imp,
+        frog_hat,
+        bakugo_mask,
+        tree,
+        jinx_hair,
+        egg,
+        heart
+    }
+
+    // Colors
+    enum colors
+    {
+        red,
+        blue,
+        green,
+        pink,
+        orange,
+        yellow,
+        black,
+        white,
+        purple,
+        brown,
+        cyan,
+        lime
+    }
+// DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
+// #endregion

@@ -5,7 +5,8 @@
 
     // Init amogus
     var new_amogus = {  x: argument[1], y: argument[2], momentum_x: argument[3], momentum_y: argument[4], next_to_owner: false, // Position
-                        state: "idle", cur_anim_frame: 0, frame_timer: 0, mainCol: c_white, secondCol: c_white, hat:"post_it", forced_timer: 0, stop_forced_on_end: false, // Visual
+                        state: states.idle, state_properties:get_state_properties(states.idle), cur_anim_frame: 0, frame_timer: 0, // Animation
+                        mainCol: c_white, secondCol: c_white, hat:hats.post_it, hat_properties:get_hat_properties(hats.post_it), forced_timer: 0, stop_forced_on_end: false, // Visual
                         dir: 1, walk_speed: 0.0, acceleration: 0.0, x_stop_dist: 0, walk_timer: 0, is_walking: false, // Walking
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
@@ -14,13 +15,14 @@
     
     // VISUAL
     // Set colors
-    var color = amogus_colors[random_func(argument[0], array_length(amogus_colors), true)];
+    var color = colors_properties[random_func(argument[0], array_length(colors_properties), true)];
     new_amogus.mainCol = color.mainCol;
     new_amogus.secondCol = color.secondCol;
 
     // Set hat
-    var hat = hat_names[random_func(argument[0], array_length(hat_names), true)];
-    new_amogus.hat = hat;
+    var hat_properties = hats_properties[random_func(argument[0], array_length(hats_properties), true)];
+    new_amogus.hat = hat_properties.hat;
+    new_amogus.hat_properties = hat_properties;
     
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -110,8 +112,8 @@
 }
 
 #define get_state_properties {
-    for (var state_property_i=0; state_property_i<array_length(state_properties); state_property_i++) {
-        var state_property = state_properties[state_property_i];
+    for (var state_property_i=0; state_property_i<array_length(states_properties); state_property_i++) {
+        var state_property = states_properties[state_property_i];
 
         if (state_property.state == argument[0]) {
             return state_property;
@@ -119,9 +121,20 @@
     }
 }
 
+#define get_hat_properties {
+    for (var hat_property_i=0; hat_property_i<array_length(hats_properties); hat_property_i++) {
+        var hat_property = hats_properties[hat_property_i];
+
+        if (hat_property.hat == argument[0]) {
+            return hat_property;
+        }
+    }
+}
+
 #define set_state {
     if (argument[0].state != argument[1]) {
         argument[0].state = argument[1];
+        argument[0].state_properties = get_state_properties(argument[1]);
     }
 }
 
@@ -141,9 +154,23 @@
     set_state(amogus, state);
 }
 
+#define is_in_taunt_state {
+    var amogus = argument[0];
+    switch (amogus.state) {
+        case states.tauntPenguinDance :
+        case states.tauntScan :
+            return true
+        break;
+        
+        default:
+            return false;
+        break;
+    }
+}
+
 #define get_colors {
-    for (var amogus_color_i=0; amogus_color_i<array_length(amogus_colors); amogus_color_i++) {
-        var amogus_color = amogus_colors[amogus_color_i]
+    for (var amogus_color_i=0; amogus_color_i<array_length(colors_properties); amogus_color_i++) {
+        var amogus_color = colors_properties[amogus_color_i]
 
             if (amogus_color.name == argument[0]) {
             return amogus_color;

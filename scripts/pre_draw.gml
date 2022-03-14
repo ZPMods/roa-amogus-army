@@ -1,3 +1,8 @@
+if (!init_done) {
+    init_enums();
+    print("init pre draw");
+}
+
 // UPDATE ALL AMOGUS ANIMATIONS
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
@@ -7,12 +12,13 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 
     // Render an amogus
-    lib_draw_sprite("amogus_mainColor_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.mainCol});
-    lib_draw_sprite("amogus_secondColor_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.secondCol});
-    lib_draw_sprite("amogus_outline_" + amogus.state, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
+    lib_draw_sprite("amogus_mainColor_" + amogus.state_properties.name, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.mainCol});
+    lib_draw_sprite("amogus_secondColor_" + amogus.state_properties.name, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.secondCol});
+    lib_draw_sprite("amogus_outline_" + amogus.state_properties.name, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
 
+    print(amogus.hat);
     // Render the hat
-    if (amogus.hat != "none") {
+    if (amogus.hat != hats.none) {
         var hat_x = amogus.x;
 
         if (amogus.dead) {
@@ -20,7 +26,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             hat_x = amogus.x - offset*2;
         }
 
-        lib_draw_sprite(amogus.hat+ "_" + amogus.state, amogus.cur_anim_frame, hat_x, amogus.y, {xscale: amogus.dir});
+        lib_draw_sprite(amogus.hat_properties.name+ "_" + amogus.state_properties.name, amogus.cur_anim_frame, hat_x, amogus.y, {xscale: amogus.dir});
     }
 }
 
@@ -75,5 +81,68 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
         alpha = params.alpha
     }
     draw_sprite_ext(sprite, subimg, x, y, xscale, yscale, rot, col, alpha)
+
+#define init_enums // Version 0
+    // Roles
+    enum roles
+    {
+        crewmate,
+        impostor
+    }
+
+    // States
+    enum states
+    {
+        idle,
+        idleToSit,
+        sit,
+        run,
+        rise,
+        fall,
+        land,
+        jumpsquat,
+        tumble,
+        heavyland,
+        hurt,
+        dead,
+        ghost,
+        tauntPenguinDance,
+        tauntScan
+    }
+
+    // Hats
+    enum hats
+    {
+        none,
+        post_it,
+        bear_ears,
+        young_sprout,
+        knight_horns,
+        headslug,
+        imp,
+        frog_hat,
+        bakugo_mask,
+        tree,
+        jinx_hair,
+        egg,
+        heart
+    }
+
+    // Colors
+    enum colors
+    {
+        red,
+        blue,
+        green,
+        pink,
+        orange,
+        yellow,
+        black,
+        white,
+        purple,
+        brown,
+        cyan,
+        lime
+    }
 // DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
 // #endregion
