@@ -133,6 +133,8 @@
 
 #define set_state {
     if (argument[0].state != argument[1]) {
+        argument[0].cur_anim_frame = 0;
+        argument[0].frame_timer = 0;
         argument[0].state = argument[1];
         argument[0].state_properties = get_state_properties(argument[1]);
     }

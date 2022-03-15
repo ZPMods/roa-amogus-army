@@ -7,26 +7,35 @@ init_enums();
 
 // Roles properties
 roles_properties = [
-    { role: roles.crewmate }
+    { role: roles.crewmate,                 possibleTaunts: [states.tauntScan]                              },
+    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVent]          },
+    { role: roles.shapeshifter,             possibleTaunts: [states.tauntTongue, states.tauntShapeshift]    },
+    { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVent]            },
+    { role: roles.doctor,                   possibleTaunts: [states.tauntScan, states.tauntDoctor]          },
+    { role: roles.guardian_angel,           possibleTaunts: [states.tauntScan]                              }
 ];
 
 // States properties
 states_properties = [
-    { state: states.idle,                  name: "idle",                   speed: 3,           frameCount: 2   },
-    { state: states.idleToSit,             name: "idleToSit",              speed: 8,           frameCount: 3   },
-    { state: states.sit,                   name: "sit",                    speed: 1,           frameCount: 1   },
-    { state: states.run,                   name: "run",                    speed: 12,          frameCount: 6   },
-    { state: states.rise,                  name: "rise",                   speed: 15,          frameCount: 2   },
-    { state: states.fall,                  name: "fall",                   speed: 15,          frameCount: 2   },
-    { state: states.land,                  name: "land",                   speed: 1,           frameCount: 1   },
-    { state: states.jumpsquat,             name: "jumpsquat",              speed: 1,           frameCount: 1   },
-    { state: states.tumble,                name: "tumble",                 speed: 20,          frameCount: 4   },
-    { state: states.heavyland,             name: "heavyland",              speed: 1,           frameCount: 1   },
-    { state: states.hurt,                  name: "hurt",                   speed: 1,           frameCount: 1   },
-    { state: states.dead,                  name: "dead",                   speed: 16,          frameCount: 4   },
-    { state: states.ghost,                 name: "ghost",                  speed: 12,          frameCount: 14  },
-    { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,          frameCount: 69  },
-    { state: states.tauntScan,             name: "tauntScan",              speed: 12,          frameCount: 15  }
+    { state: states.idle,                  name: "idle",                   speed: 3,            frameCount: 2   },
+    { state: states.idleToSit,             name: "idleToSit",              speed: 8,            frameCount: 3   },
+    { state: states.sit,                   name: "sit",                    speed: 1,            frameCount: 1   },
+    { state: states.run,                   name: "run",                    speed: 12,           frameCount: 6   },
+    { state: states.rise,                  name: "rise",                   speed: 15,           frameCount: 2   },
+    { state: states.fall,                  name: "fall",                   speed: 15,           frameCount: 2   },
+    { state: states.land,                  name: "land",                   speed: 1,            frameCount: 1   },
+    { state: states.jumpsquat,             name: "jumpsquat",              speed: 1,            frameCount: 1   },
+    { state: states.tumble,                name: "tumble",                 speed: 20,           frameCount: 4   },
+    { state: states.heavyland,             name: "heavyland",              speed: 1,            frameCount: 1   },
+    { state: states.hurt,                  name: "hurt",                   speed: 1,            frameCount: 1   },
+    { state: states.dead,                  name: "dead",                   speed: 16,           frameCount: 4   },
+    { state: states.ghost,                 name: "ghost",                  speed: 12,           frameCount: 14  },
+    { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,           frameCount: 69  },
+    { state: states.tauntScan,             name: "tauntScan",              speed: 9,            frameCount: 15  },
+    { state: states.tauntTongue,           name: "tauntTongue",            speed: 9,            frameCount: 15  },
+    { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 9,            frameCount: 15  },
+    { state: states.tauntVent,             name: "tauntVent",              speed: 9,            frameCount: 15  },
+    { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 9,            frameCount: 15  }
 ];
 
 // Hats properties
@@ -44,7 +53,7 @@ hats_properties = [
     { hat: hats.jinx_hair,         name: "jinx_hair"    },
     { hat: hats.egg,               name: "egg"          },
     { hat: hats.heart,             name: "heart"        }
-]
+];
 
 // Colors properties
 colors_properties = [
@@ -60,7 +69,7 @@ colors_properties = [
     { color: colors.brown,     mainCol: make_colour_rgb(113, 73, 30),      secondCol: make_colour_rgb(94, 38, 21)      },         
     { color: colors.cyan,      mainCol: make_colour_rgb(56, 222, 220),     secondCol: make_colour_rgb(36, 168, 190)    },      
     { color: colors.lime,      mainCol: make_colour_rgb(80, 239, 57),      secondCol: make_colour_rgb(21, 167, 66)     }      
-]
+];
 
 // VARIABLES
 init_done = false;
@@ -73,7 +82,7 @@ hit_enemy_detected_done = false;
 dead_enemy_detected_done = false;
 last_hit_enemy = noone;
 
-focused_chance_to_taunt = 0.9;
+focused_chance_to_taunt = 0.75;
 unfocused_chance_to_taunt = 0.5;
 
 base_hp = 3;
@@ -123,7 +132,7 @@ min_focused_time = 600;
 max_focused_time = 900;
 
 min_unfocused_time = 300;
-max_unfocused_time = 600;
+max_unfocused_time = 1200;
 
 min_unfocused_walk_time = 20;
 max_unfocused_walk_time = 60;
@@ -179,7 +188,11 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
     enum roles
     {
         crewmate,
-        impostor
+        impostor,
+        shapeshifter,
+        engineer,
+        doctor,
+        guardian_angel
     }
 
     // States
@@ -199,7 +212,11 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         dead,
         ghost,
         tauntPenguinDance,
-        tauntScan
+        tauntScan,
+        tauntTongue,
+        tauntShapeshift,
+        tauntVent,
+        tauntDoctor
     }
 
     // Hats

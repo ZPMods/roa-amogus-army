@@ -16,7 +16,6 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     lib_draw_sprite("amogus_secondColor_" + amogus.state_properties.name, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir, col: amogus.secondCol});
     lib_draw_sprite("amogus_outline_" + amogus.state_properties.name, amogus.cur_anim_frame, amogus.x, amogus.y, {xscale: amogus.dir});
 
-    print(amogus.hat);
     // Render the hat
     if (amogus.hat != hats.none) {
         var hat_x = amogus.x;

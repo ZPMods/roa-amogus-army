@@ -3,7 +3,11 @@
     enum roles
     {
         crewmate,
-        impostor
+        impostor,
+        shapeshifter,
+        engineer,
+        doctor,
+        guardian_angel
     }
     
     // States
@@ -23,7 +27,11 @@
         dead,
         ghost,
         tauntPenguinDance,
-        tauntScan
+        tauntScan,
+        tauntTongue,
+        tauntShapeshift,
+        tauntVent,
+        tauntDoctor
     }
 
     // Hats
