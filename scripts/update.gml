@@ -3,7 +3,7 @@ if (!init_done) {
     init_done = true;
 
     init_enums();
-print("init update");
+    
     for (i=0; i<base_amogus; i++) {
         new_random_amogus(i, owner.x+rand(i, -50, 50, false), owner.y, 0.0, 0.0, base_hp, false);
     }
@@ -350,13 +350,13 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     }
 
     // TAUNT
-    if (is_in_taunt_state(amogus)) {
+    if (state == "taunt") {
         if (!amogus.taunt_detected_done) {
             amogus.taunt_detected_done = true;
 
-            if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0) {
+            if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0 && amogus.jumpsquat_timer < 0) {
                 if (pct(army_item_i, amogus.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
-                    force_state(amogus, states.tauntPenguinDance, 0);
+                    force_state(amogus, states.tauntScan, 0);
                     amogus.is_taunting = true;
                 }
             }
@@ -374,7 +374,7 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
     // ANIM STUFF -----------
     // Take care of everything about frame timer in update
     // So that it stops when in pause
-    var anim_speed = get_state_properties("ghost").speed;
+    var anim_speed = get_state_properties(states.ghost).speed;
     var frame_timer_max = 60 / anim_speed;
 
     ghost.frame_timer ++;
@@ -382,7 +382,7 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
     if (ghost.frame_timer >= frame_timer_max) {
         ghost.cur_anim_frame++;
         
-        if (ghost.cur_anim_frame >= get_state_properties("ghost").frameCount) {
+        if (ghost.cur_anim_frame >= get_state_properties(states.ghost).frameCount) {
             ghost.cur_anim_frame = 0;
         }
 
@@ -622,6 +622,8 @@ else if (dead_enemy_detected_done) {
 
 #define set_state // Version 0
     if (argument[0].state != argument[1]) {
+        argument[0].cur_anim_frame = 0;
+        argument[0].frame_timer = 0;
         argument[0].state = argument[1];
         argument[0].state_properties = get_state_properties(argument[1]);
     }
@@ -640,19 +642,6 @@ else if (dead_enemy_detected_done) {
     }
 
     set_state(amogus, state);
-
-#define is_in_taunt_state // Version 0
-    var amogus = argument[0];
-    switch (amogus.state) {
-        case states.tauntPenguinDance :
-        case states.tauntScan :
-            return true
-        break;
-
-        default:
-            return false;
-        break;
-    }
 
 #define collision_at_point // Version 0
     if (collision_point(argument[0], argument[1], asset_get("par_block"), false, true) ||
