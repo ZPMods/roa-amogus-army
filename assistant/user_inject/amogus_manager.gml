@@ -15,19 +15,13 @@
     
     // VISUAL
     // Set colors
-    var color = colors_properties[random_func(argument[0], array_length(colors_properties), true)];
-    new_amogus.mainCol = color.mainCol;
-    new_amogus.secondCol = color.secondCol;
+    random_color(argument[0], new_amogus);
 
     // Set hat
-    var hat_properties = hats_properties[random_func(argument[0], array_length(hats_properties), true)];
-    new_amogus.hat = hat_properties.hat;
-    new_amogus.hat_properties = hat_properties;
+    random_hat(argument[0], new_amogus);
     
     // Set role
-    var role_properties = roles_properties[random_func(argument[0], array_length(roles_properties), true)];
-    new_amogus.role = role_properties.role;
-    new_amogus.possible_taunts = role_properties.possibleTaunts;
+    random_role(argument[0], new_amogus);
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -42,6 +36,30 @@
 
     // Put in array
     add_to_ghost_array(new_ghost, ghosts);
+}
+
+#define random_color {
+    var amogus = argument[1];
+
+    var color = colors_properties[random_func(argument[0], array_length(colors_properties), true)];
+    amogus.mainCol = color.mainCol;
+    amogus.secondCol = color.secondCol;
+}
+
+#define random_hat {
+    var amogus = argument[1];
+
+    var hat_properties = hats_properties[random_func(argument[0], array_length(hats_properties), true)];
+    amogus.hat = hat_properties.hat;
+    amogus.hat_properties = hat_properties;
+}
+
+#define random_role {
+    var amogus = argument[1];
+
+    var role_properties = roles_properties[random_func(argument[0], array_length(roles_properties), true)];
+    new_amogus.role = role_properties.role;
+    new_amogus.possible_taunts = role_properties.possibleTaunts;
 }
 
 #define add_to_army_array {

@@ -1,6 +1,5 @@
 if (!init_done) {
     init_enums();
-    print("init pre draw");
 }
 
 // UPDATE ALL AMOGUS ANIMATIONS
@@ -86,7 +85,11 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
     enum roles
     {
         crewmate,
-        impostor
+        impostor,
+        shapeshifter,
+        engineer,
+        doctor,
+        guardian_angel
     }
 
     // States
@@ -106,7 +109,13 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
         dead,
         ghost,
         tauntPenguinDance,
-        tauntScan
+        tauntScan,
+        tauntTongue,
+        tauntShapeshift,
+        tauntShapeshiftEnd,
+        tauntVentIn,
+        tauntVentOut,
+        tauntDoctor
     }
 
     // Hats

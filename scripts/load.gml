@@ -34,6 +34,7 @@ states_properties = [
     { state: states.tauntScan,             name: "tauntScan",              speed: 9,            frameCount: 15  },
     { state: states.tauntTongue,           name: "tauntTongue",            speed: 1,            frameCount: 1   },
     { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 1,            frameCount: 1   },
+    { state: states.tauntShapeshiftEnd,    name: "tauntShapeshiftEnd",     speed: 1,            frameCount: 1   },
     { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 1,            frameCount: 1   },
     { state: states.tauntVentOut,          name: "tauntVentOut",           speed: 1,            frameCount: 1   },
     { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 1,            frameCount: 1   }
@@ -216,6 +217,7 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         tauntScan,
         tauntTongue,
         tauntShapeshift,
+        tauntShapeshiftEnd,
         tauntVentIn,
         tauntVentOut,
         tauntDoctor
