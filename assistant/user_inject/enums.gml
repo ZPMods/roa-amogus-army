@@ -30,7 +30,8 @@
         tauntScan,
         tauntTongue,
         tauntShapeshift,
-        tauntVent,
+        tauntVentIn,
+        tauntVentOut,
         tauntDoctor
     }
 

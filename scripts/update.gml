@@ -356,8 +356,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 
             if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0 && amogus.jumpsquat_timer < 0) {
                 if (pct(army_item_i, amogus.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
-                    force_state(amogus, states.tauntScan, 0);
-                    amogus.is_taunting = true;
+                    taunt(army_item_i, amogus);
                 }
             }
         }
@@ -522,7 +521,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        taunt_detected_done: false, is_taunting: false }; // Other
+                        role: roles.crewmate, possible_taunts: get_role_properties(roles.crewmate).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
 
     // VISUAL
     // Set colors
@@ -534,6 +533,11 @@ else if (dead_enemy_detected_done) {
     var hat_properties = hats_properties[random_func(argument[0], array_length(hats_properties), true)];
     new_amogus.hat = hat_properties.hat;
     new_amogus.hat_properties = hat_properties;
+
+    // Set role
+    var role_properties = roles_properties[random_func(argument[0], array_length(roles_properties), true)];
+    new_amogus.role = role_properties.role;
+    new_amogus.possible_taunts = role_properties.possibleTaunts;
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -598,6 +602,15 @@ else if (dead_enemy_detected_done) {
 
         if (hat_property.hat == argument[0]) {
             return hat_property;
+        }
+    }
+
+#define get_role_properties // Version 0
+    for (var role_property_i=0; role_property_i<array_length(roles_properties); role_property_i++) {
+        var role_property = roles_properties[role_property_i];
+
+        if (role_property.role == argument[0]) {
+            return role_property;
         }
     }
 
@@ -756,6 +769,14 @@ else if (dead_enemy_detected_done) {
 
     array_push(ghosts, argument[0]);
 
+#define taunt // Version 0
+    var amogus = argument[1];
+
+    var taunt = amogus.possible_taunts[random_func(argument[0], array_length(amogus.possible_taunts), true)];
+
+    force_state(amogus, taunt, 0);
+    amogus.is_taunting = true;
+
 #define momentum_to_point // Version 0
     var dist = argument[1] - argument[2];
     var momentum = dist/30 + rand(i, -1.0, 1.0, false);
@@ -766,7 +787,11 @@ else if (dead_enemy_detected_done) {
     enum roles
     {
         crewmate,
-        impostor
+        impostor,
+        shapeshifter,
+        engineer,
+        doctor,
+        guardian_angel
     }
 
     // States
@@ -786,7 +811,12 @@ else if (dead_enemy_detected_done) {
         dead,
         ghost,
         tauntPenguinDance,
-        tauntScan
+        tauntScan,
+        tauntTongue,
+        tauntShapeshift,
+        tauntVentIn,
+        tauntVentOut,
+        tauntDoctor
     }
 
     // Hats

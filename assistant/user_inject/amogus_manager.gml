@@ -11,7 +11,7 @@
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        taunt_detected_done: false, is_taunting: false }; // Other
+                        role: roles.crewmate, possible_taunts: get_role_properties(roles.crewmate).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
     
     // VISUAL
     // Set colors
@@ -24,6 +24,11 @@
     new_amogus.hat = hat_properties.hat;
     new_amogus.hat_properties = hat_properties;
     
+    // Set role
+    var role_properties = roles_properties[random_func(argument[0], array_length(roles_properties), true)];
+    new_amogus.role = role_properties.role;
+    new_amogus.possible_taunts = role_properties.possibleTaunts;
+
     // GAMEPLAY
     randomize_walk_values(new_amogus);
     new_amogus.no_jump_timer = rand(argument[0], min_nojump_time, max_nojump_time, true);
@@ -127,6 +132,16 @@
 
         if (hat_property.hat == argument[0]) {
             return hat_property;
+        }
+    }
+}
+
+#define get_role_properties {
+    for (var role_property_i=0; role_property_i<array_length(roles_properties); role_property_i++) {
+        var role_property = roles_properties[role_property_i];
+
+        if (role_property.role == argument[0]) {
+            return role_property;
         }
     }
 }
@@ -292,6 +307,15 @@
     }
     
     argument[0].hit_recently_timer = hit_resistance_time;
+}
+
+#define taunt {
+    var amogus = argument[1];
+
+    var taunt = amogus.possible_taunts[random_func(argument[0], array_length(amogus.possible_taunts), true)];
+    
+    force_state(amogus, taunt, 0);
+    amogus.is_taunting = true;
 }
 
 #define momentum_to_point {

@@ -8,9 +8,9 @@ init_enums();
 // Roles properties
 roles_properties = [
     { role: roles.crewmate,                 possibleTaunts: [states.tauntScan]                              },
-    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVent]          },
+    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVentIn]          },
     { role: roles.shapeshifter,             possibleTaunts: [states.tauntTongue, states.tauntShapeshift]    },
-    { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVent]            },
+    { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVentIn]            },
     { role: roles.doctor,                   possibleTaunts: [states.tauntScan, states.tauntDoctor]          },
     { role: roles.guardian_angel,           possibleTaunts: [states.tauntScan]                              }
 ];
@@ -32,10 +32,11 @@ states_properties = [
     { state: states.ghost,                 name: "ghost",                  speed: 12,           frameCount: 14  },
     { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,           frameCount: 69  },
     { state: states.tauntScan,             name: "tauntScan",              speed: 9,            frameCount: 15  },
-    { state: states.tauntTongue,           name: "tauntTongue",            speed: 9,            frameCount: 15  },
-    { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 9,            frameCount: 15  },
-    { state: states.tauntVent,             name: "tauntVent",              speed: 9,            frameCount: 15  },
-    { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 9,            frameCount: 15  }
+    { state: states.tauntTongue,           name: "tauntTongue",            speed: 1,            frameCount: 1   },
+    { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 1,            frameCount: 1   },
+    { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 1,            frameCount: 1   },
+    { state: states.tauntVentOut,          name: "tauntVentOut",           speed: 1,            frameCount: 1   },
+    { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 1,            frameCount: 1   }
 ];
 
 // Hats properties
@@ -97,7 +98,7 @@ hit_force_var = 1;
 
 dead_rot_speed = 12;
 
-base_amogus = 1;
+base_amogus = 3;
 amogus_on_kill = 3;
 max_amogus = 15;
 
@@ -215,7 +216,8 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         tauntScan,
         tauntTongue,
         tauntShapeshift,
-        tauntVent,
+        tauntVentIn,
+        tauntVentOut,
         tauntDoctor
     }
 
