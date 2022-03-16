@@ -312,7 +312,14 @@
 #define taunt {
     var amogus = argument[1];
 
-    var taunt = amogus.possible_taunts[random_func(argument[0], array_length(amogus.possible_taunts), true)];
+    var taunt;
+
+    if (amogus.hat == hats.none && pct(argument[0], 0.05)) {
+        taunt = states.tauntPenguinDance;
+    }
+    else {
+        taunt = amogus.possible_taunts[random_func(argument[0], array_length(amogus.possible_taunts), true)];
+    }
     
     force_state(amogus, taunt, 0);
     amogus.is_taunting = true;
