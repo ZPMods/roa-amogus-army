@@ -44,6 +44,8 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
                         case states.tauntVentIn :
                             force_state(amogus, states.tauntVentOut, 0);
                             
+                            vent(army_item_i, amogus);
+
                             amogus.is_taunting = true;
                         break;
 
@@ -102,7 +104,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
             if (amogus.is_walking) {
                 amogus.is_walking = false;
 
-                if (pct(army_item_i, chance_to_sit)) {
+                if (pct(army_item_i, chance_to_sit) && !amogus.is_taunting) {
                     if (!amogus.sitting) {
                         force_state(amogus, states.idleToSit, 0);
                     }
@@ -539,7 +541,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.shapeshifter, possible_taunts: get_role_properties(roles.shapeshifter).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
+                        role: roles.impostor, possible_taunts: get_role_properties(roles.impostor).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
 
     // VISUAL
     // Set colors
@@ -576,8 +578,8 @@ else if (dead_enemy_detected_done) {
     var amogus = argument[1];
 
     var role_properties = roles_properties[random_func(argument[0], array_length(roles_properties), true)];
-    new_amogus.role = role_properties.role;
-    new_amogus.possible_taunts = role_properties.possibleTaunts;
+    amogus.role = role_properties.role;
+    amogus.possible_taunts = role_properties.possibleTaunts;
 
 #define add_to_army_array // Version 0
     for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
@@ -816,6 +818,29 @@ else if (dead_enemy_detected_done) {
 
     force_state(amogus, taunt, 0);
     amogus.is_taunting = true;
+
+#define vent // Version 0
+    var amogus = argument[1];
+
+    amogus.y -= 200;
+    amogus.x = random_point_above_stage(argument[0]);
+
+    amogus.y = lower_ground_y(amogus);
+
+#define lower_ground_y // Version 0
+    var amogus = argument[0];
+
+    for (i=0; i <= 999999; i++) {
+        if (collision_at_point(amogus.x, round(amogus.y)+i)) {
+            return amogus.y+i;
+        }
+    }
+
+    return amogus.y;
+
+#define random_point_above_stage // Version 0
+    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - SD_WIDTH/2;
+    return stage_center_x + x_offset;
 
 #define momentum_to_point // Version 0
     var dist = argument[1] - argument[2];
