@@ -143,13 +143,16 @@ min_unfocused_wait_time = 60;
 max_unfocused_wait_time = 120;
 
 chance_to_lose_focus = 0.33;
+chance_to_sit = 0.25;
 
 ground_friction = 0.9;
 air_friction = 0.99;
 gravity = 0.2;
 fall_speed = 9.81;
-chance_to_sit = 0.25;
 
+push_force = 0.75;
+push_dist_threshold = 20;
+stopped_threshold = 0.5;
 
 // Army
 army = [];

@@ -14,6 +14,8 @@ if (!init_done) {
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
+    print(amogus.momentum_x);
+
     if (amogus == noone) {
         continue;
     }
@@ -260,6 +262,26 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         }
     }
 
+    // OTHER AMOGUSES
+    if (amogus.momentum_x <= stopped_threshold && amogus.on_ground && !amogus.is_walking) {
+        for (var other_army_item_i=0; other_army_item_i<array_length(army); other_army_item_i++) {
+            var other_amogus = army[other_army_item_i];
+
+            if (army_item_i == other_army_item_i || !other_amogus.on_ground || abs(other_amogus.y - amogus.y) > 2 || other_amogus.momentum_x > stopped_threshold || other_amogus.is_walking) {
+                continue;
+            }
+            
+            var dist = other_amogus.x - amogus.x;
+
+            if (abs(dist) <= push_dist_threshold) {
+                var dir = -sign(dist);
+                if (dir == 0) dir = 1;
+                
+                amogus.momentum_x = push_force * dir;
+            }
+        }
+    }
+
     // GAME INTERACTIONS
     // Respawn on bottom blastzone
     if (amogus.y >= get_stage_data(SD_Y_POS) + get_stage_data(SD_BOTTOM_BLASTZONE) && amogus.momentum_y > 0) {
@@ -284,7 +306,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     // Anim states
     if (amogus.forced_timer <= 0) {
         if (amogus.on_ground) {
-            if (should_walk(amogus) && abs(amogus.momentum_x) > 0.2) {
+            if (should_walk(amogus) && amogus.is_walking && abs(amogus.momentum_x) > 0.2) {
                 set_state(amogus, states.run);
             }
             else {
@@ -541,7 +563,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.impostor, possible_taunts: get_role_properties(roles.impostor).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
+                        role: roles.crewmate, possible_taunts: get_role_properties(roles.crewmate).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
 
     // VISUAL
     // Set colors
@@ -551,7 +573,7 @@ else if (dead_enemy_detected_done) {
     random_hat(argument[0], new_amogus);
 
     // Set role
-    //random_role(argument[0], new_amogus);
+    random_role(argument[0], new_amogus);
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
