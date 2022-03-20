@@ -8,7 +8,7 @@ init_enums();
 // Roles properties
 roles_properties = [
     { role: roles.crewmate,                 possibleTaunts: [states.tauntScan]                              },
-    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVentIn]          },
+    { role: roles.impostor,                 possibleTaunts: [/*states.tauntTongue,*/ states.tauntVentIn]          },
     { role: roles.shapeshifter,             possibleTaunts: [states.tauntTongue, states.tauntShapeshift]    },
     { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVentIn]            },
     { role: roles.doctor,                   possibleTaunts: [states.tauntScan, states.tauntDoctor]          },
@@ -35,8 +35,8 @@ states_properties = [
     { state: states.tauntTongue,           name: "tauntTongue",            speed: 1,            frameCount: 1   },
     { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 1,            frameCount: 1   },
     { state: states.tauntShapeshiftEnd,    name: "tauntShapeshiftEnd",     speed: 1,            frameCount: 1   },
-    { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 1,            frameCount: 1   },
-    { state: states.tauntVentOut,          name: "tauntVentOut",           speed: 1,            frameCount: 1   },
+    { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 15,           frameCount: 16  },
+    { state: states.tauntVentOut,          name: "tauntVentOut",           speed: 15,           frameCount: 16  },
     { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 1,            frameCount: 1   }
 ];
 
@@ -99,7 +99,7 @@ hit_force_var = 1;
 
 dead_rot_speed = 12;
 
-base_amogus = 3;
+base_amogus = 1;
 amogus_on_kill = 3;
 max_amogus = 15;
 

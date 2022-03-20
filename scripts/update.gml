@@ -14,8 +14,6 @@ if (!init_done) {
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
     var amogus = army[army_item_i];
 
-    print(amogus.momentum_x);
-
     if (amogus == noone) {
         continue;
     }
@@ -431,8 +429,6 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
     }
 
     ghost.y -= ghost.speed;
-    //ghost.x += cos(ghost.cur_anim_frame);
-    //prints(ghost.cur_anim_frame, cos(ghost.cur_anim_frame));
 }
 
 // OWNER GOT HIT
@@ -541,15 +537,6 @@ else if (dead_enemy_detected_done) {
 // #region vvv LIBRARY DEFINES AND MACROS vvv
 // DANGER File below this point will be overwritten! Generated defines and macros below.
 // Write NO-INJECT in a comment above this area to disable injection.
-#define prints // Version 0
-    // Prints each parameter to console, separated by spaces.
-    var _out_string = string(argument[0])
-    for (var i=1; i<argument_count; i++) {
-        _out_string += " "
-        _out_string += string(argument[i])
-    }
-    print(_out_string)
-
 #define new_random_amogus // Version 0
     if (amogus_count() >= max_amogus) {
         return;
@@ -563,7 +550,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.crewmate, possible_taunts: get_role_properties(roles.crewmate).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
+                        role: roles.impostor, possible_taunts: get_role_properties(roles.impostor).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
 
     // VISUAL
     // Set colors
@@ -573,7 +560,7 @@ else if (dead_enemy_detected_done) {
     random_hat(argument[0], new_amogus);
 
     // Set role
-    random_role(argument[0], new_amogus);
+    // random_role(argument[0], new_amogus);
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -725,7 +712,7 @@ else if (dead_enemy_detected_done) {
 #define upper_ground_y // Version 0
     var amogus = argument[0];
 
-    for (i=0; i <= 999999; i++) {
+    for (i=0; i <= 999; i++) {
         if (!collision_at_point(amogus.x, round(amogus.y)-i)) {
             return amogus.y-i+1;
         }
@@ -852,7 +839,7 @@ else if (dead_enemy_detected_done) {
 #define lower_ground_y // Version 0
     var amogus = argument[0];
 
-    for (i=0; i <= 999999; i++) {
+    for (i=0; i <= 999; i++) {
         if (collision_at_point(amogus.x, round(amogus.y)+i)) {
             return amogus.y+i;
         }
@@ -861,7 +848,7 @@ else if (dead_enemy_detected_done) {
     return amogus.y;
 
 #define random_point_above_stage // Version 0
-    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - SD_WIDTH/2;
+    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - get_stage_data(SD_WIDTH)/2;
     return stage_center_x + x_offset;
 
 #define momentum_to_point // Version 0

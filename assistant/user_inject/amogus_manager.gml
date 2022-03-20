@@ -11,7 +11,7 @@
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.crewmate, possible_taunts: get_role_properties(roles.crewmate).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
+                        role: roles.impostor, possible_taunts: get_role_properties(roles.impostor).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
     
     // VISUAL
     // Set colors
@@ -21,7 +21,7 @@
     random_hat(argument[0], new_amogus);
     
     // Set role
-    random_role(argument[0], new_amogus);
+    // random_role(argument[0], new_amogus);
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -236,7 +236,7 @@
 #define upper_ground_y {
     var amogus = argument[0];
 
-    for (i=0; i <= 999999; i++) { 
+    for (i=0; i <= 999; i++) { 
         if (!collision_at_point(amogus.x, round(amogus.y)-i)) {
             return amogus.y-i+1;
         }
@@ -248,7 +248,7 @@
 #define lower_ground_y {
     var amogus = argument[0];
 
-    for (i=0; i <= 999999; i++) { 
+    for (i=0; i <= 999; i++) { 
         if (collision_at_point(amogus.x, round(amogus.y)+i)) {
             return amogus.y+i;
         }
@@ -365,7 +365,7 @@
 }
 
 #define random_point_above_stage {
-    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - SD_WIDTH/2;
+    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - get_stage_data(SD_WIDTH)/2;
     return stage_center_x + x_offset;
 }
 
