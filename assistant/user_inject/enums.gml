@@ -26,6 +26,7 @@
         hurt,
         dead,
         ghost,
+        guardianAngel,
         tauntPenguinDance,
         tauntScan,
         tauntTongue,

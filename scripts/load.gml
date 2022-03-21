@@ -8,9 +8,9 @@ init_enums();
 // Roles properties
 roles_properties = [
     { role: roles.crewmate,                 possibleTaunts: [states.tauntScan]                              },
-    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVentIn]          },
+    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVentIn]        },
     { role: roles.shapeshifter,             possibleTaunts: [states.tauntTongue, states.tauntShapeshift]    },
-    { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVentIn]            },
+    { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVentIn]          },
     { role: roles.doctor,                   possibleTaunts: [states.tauntScan, states.tauntDoctor]          },
     { role: roles.guardian_angel,           possibleTaunts: [states.tauntScan]                              }
 ];
@@ -30,6 +30,7 @@ states_properties = [
     { state: states.hurt,                  name: "hurt",                   speed: 1,            frameCount: 1   },
     { state: states.dead,                  name: "dead",                   speed: 16,           frameCount: 4   },
     { state: states.ghost,                 name: "ghost",                  speed: 12,           frameCount: 14  },
+    { state: states.guardianAngel,         name: "guardianAngel",          speed: 12,           frameCount: 14  },
     { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,           frameCount: 69  },
     { state: states.tauntScan,             name: "tauntScan",              speed: 9,            frameCount: 15  },
     { state: states.tauntTongue,           name: "tauntTongue",            speed: 10,           frameCount: 18  },
@@ -87,7 +88,7 @@ last_hit_enemy = noone;
 focused_chance_to_taunt = 0.75;
 unfocused_chance_to_taunt = 0.5;
 
-base_hp = 3;
+base_hp = 1;
 
 respawn_x = 0;
 respawn_y = 0;
@@ -219,6 +220,7 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         hurt,
         dead,
         ghost,
+        guardianAngel,
         tauntPenguinDance,
         tauntScan,
         tauntTongue,

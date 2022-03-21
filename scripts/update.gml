@@ -559,7 +559,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.doctor, possible_taunts: get_role_properties(roles.doctor).possibleTaunts, taunt_detected_done: false, is_taunting: false, taunt_timer:-1 }; // Taunt
+                        role: roles.guardian_angel, possible_taunts: get_role_properties(roles.guardian_angel).possibleTaunts, taunt_detected_done: false, is_taunting: false, taunt_timer:-1 }; // Taunt
 
     // VISUAL
     // Set colors
@@ -793,7 +793,9 @@ else if (dead_enemy_detected_done) {
             argument[0].tumble = true;
             argument[0].dead = true;
             argument[0].dead_x = argument[0].x;
-            new_ghost(argument[0].x, argument[0].y, argument[0].dir, argument[0].mainCol, argument[0].secondCol);
+
+            var isGuardianAngel = argument[0].role == roles.guardian_angel;
+            new_ghost(argument[0].x, argument[0].y, argument[0].dir, argument[0].mainCol, argument[0].secondCol, isGuardianAngel);
         }
 
         if (argument[0].dead) {
@@ -805,7 +807,7 @@ else if (dead_enemy_detected_done) {
     argument[0].hit_recently_timer = hit_resistance_time;
 
 #define new_ghost // Version 0
-    var new_ghost = {  x: argument[0], y: argument[1], dir: argument[2], mainCol: argument[3], secondCol: argument[4], speed: 2.5, opacity: 0.5, cur_anim_frame: 0, frame_timer: 0 };
+    var new_ghost = {  x: argument[0], y: argument[1], dir: argument[2], mainCol: argument[3], secondCol: argument[4], speed: 2.5, opacity: 0.5, cur_anim_frame: 0, frame_timer: 0, guardian_angel: argument[5] };
 
     // Put in array
     add_to_ghost_array(new_ghost, ghosts);
