@@ -32,9 +32,9 @@ states_properties = [
     { state: states.ghost,                 name: "ghost",                  speed: 12,           frameCount: 14  },
     { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,           frameCount: 69  },
     { state: states.tauntScan,             name: "tauntScan",              speed: 9,            frameCount: 15  },
-    { state: states.tauntTongue,           name: "tauntTongue",            speed: 10,            frameCount: 18   },
-    { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 1,            frameCount: 1   },
-    { state: states.tauntShapeshiftEnd,    name: "tauntShapeshiftEnd",     speed: 1,            frameCount: 1   },
+    { state: states.tauntTongue,           name: "tauntTongue",            speed: 10,           frameCount: 18  },
+    { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 12,           frameCount: 13  },
+    { state: states.tauntShapeshiftEnd,    name: "tauntShapeshiftEnd",     speed: 12,           frameCount: 3   },
     { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 15,           frameCount: 16  },
     { state: states.tauntVentOut,          name: "tauntVentOut",           speed: 15,           frameCount: 16  },
     { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 1,            frameCount: 1   }
