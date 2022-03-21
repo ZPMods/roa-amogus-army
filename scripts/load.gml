@@ -8,7 +8,7 @@ init_enums();
 // Roles properties
 roles_properties = [
     { role: roles.crewmate,                 possibleTaunts: [states.tauntScan]                              },
-    { role: roles.impostor,                 possibleTaunts: [/*states.tauntTongue,*/ states.tauntVentIn]          },
+    { role: roles.impostor,                 possibleTaunts: [states.tauntTongue, states.tauntVentIn]          },
     { role: roles.shapeshifter,             possibleTaunts: [states.tauntTongue, states.tauntShapeshift]    },
     { role: roles.engineer,                 possibleTaunts: [states.tauntScan, states.tauntVentIn]            },
     { role: roles.doctor,                   possibleTaunts: [states.tauntScan, states.tauntDoctor]          },
@@ -32,7 +32,7 @@ states_properties = [
     { state: states.ghost,                 name: "ghost",                  speed: 12,           frameCount: 14  },
     { state: states.tauntPenguinDance,     name: "tauntPenguinDance",      speed: 10,           frameCount: 69  },
     { state: states.tauntScan,             name: "tauntScan",              speed: 9,            frameCount: 15  },
-    { state: states.tauntTongue,           name: "tauntTongue",            speed: 1,            frameCount: 1   },
+    { state: states.tauntTongue,           name: "tauntTongue",            speed: 10,            frameCount: 18   },
     { state: states.tauntShapeshift,       name: "tauntShapeshift",        speed: 1,            frameCount: 1   },
     { state: states.tauntShapeshiftEnd,    name: "tauntShapeshiftEnd",     speed: 1,            frameCount: 1   },
     { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 15,           frameCount: 16  },
@@ -100,8 +100,8 @@ hit_force_var = 1;
 dead_rot_speed = 12;
 
 base_amogus = 1;
-amogus_on_kill = 3;
-max_amogus = 15;
+amogus_on_kill = 2;
+max_amogus = 10;
 
 divider = 10
 
@@ -142,6 +142,9 @@ max_unfocused_walk_time = 60;
 min_unfocused_wait_time = 60;
 max_unfocused_wait_time = 120;
 
+min_taunt_wait_time = 0;
+max_taunt_wait_time = 60;
+
 chance_to_lose_focus = 0.33;
 chance_to_sit = 0.25;
 
@@ -181,7 +184,7 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
     for (var state_property_i=0; state_property_i<array_length(states_properties); state_property_i++) {
         var state_property = states_properties[state_property_i];
 
-        sprite_change_offset(sprite_name + "_" + state_property.name, 32, 78);
+        sprite_change_offset(sprite_name + "_" + state_property.name, 48, 78);
     }
 }
 

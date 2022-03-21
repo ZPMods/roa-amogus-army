@@ -387,6 +387,14 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         if (amogus.no_jump_timer > 0 && !amogus.is_jumping && amogus.land_timer <= 0 && !amogus.next_to_owner && amogus.focused && amogus.y - owner.y > y_jump_dist && !amogus.is_taunting) {
             amogus.no_jump_timer--;
         } 
+
+        if (amogus.taunt_timer > 0) {
+            amogus.taunt_timer--;
+        }
+        else if (amogus.taunt_timer > -1) {
+            taunt(army_item_i, amogus);
+            amogus.taunt_timer = -1;
+        }
     }
 
     // TAUNT
@@ -394,9 +402,10 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         if (!amogus.taunt_detected_done) {
             amogus.taunt_detected_done = true;
 
-            if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0 && amogus.jumpsquat_timer < 0) {
+            if (!amogus.sitting && amogus.on_ground && amogus.land_timer <= 0 && amogus.jumpsquat_timer < 0 && !amogus.is_taunting) {
                 if (pct(army_item_i, amogus.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
-                    taunt(army_item_i, amogus);
+                    amogus.taunt_timer = rand(army_item_i, min_taunt_wait_time, max_taunt_wait_time, true);
+                    amogus.wait_timer += amogus.taunt_timer;
                 }
             }
         }
@@ -550,7 +559,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.impostor, possible_taunts: get_role_properties(roles.impostor).possibleTaunts, taunt_detected_done: false, is_taunting: false }; // Taunt
+                        role: roles.impostor, possible_taunts: get_role_properties(roles.impostor).possibleTaunts, taunt_detected_done: false, is_taunting: false, taunt_timer:-1 }; // Taunt
 
     // VISUAL
     // Set colors
@@ -560,7 +569,7 @@ else if (dead_enemy_detected_done) {
     random_hat(argument[0], new_amogus);
 
     // Set role
-    // random_role(argument[0], new_amogus);
+    random_role(argument[0], new_amogus);
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
