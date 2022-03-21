@@ -37,7 +37,7 @@ states_properties = [
     { state: states.tauntShapeshiftEnd,    name: "tauntShapeshiftEnd",     speed: 12,           frameCount: 3   },
     { state: states.tauntVentIn,           name: "tauntVentIn",            speed: 15,           frameCount: 16  },
     { state: states.tauntVentOut,          name: "tauntVentOut",           speed: 15,           frameCount: 16  },
-    { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 1,            frameCount: 1   }
+    { state: states.tauntDoctor,           name: "tauntDoctor",            speed: 13,           frameCount: 53  }
 ];
 
 // Hats properties
@@ -143,7 +143,7 @@ min_unfocused_wait_time = 60;
 max_unfocused_wait_time = 120;
 
 min_taunt_wait_time = 0;
-max_taunt_wait_time = 60;
+max_taunt_wait_time = 30;
 
 chance_to_lose_focus = 0.33;
 chance_to_sit = 0.25;
