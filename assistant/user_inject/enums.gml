@@ -69,6 +69,12 @@
         purple,
         brown,
         cyan,
-        lime
+        lime,
+        maroon,
+        rose,
+        banana,
+        gray,
+        tan_,
+        coral
     }
 }

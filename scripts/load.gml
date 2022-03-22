@@ -60,18 +60,24 @@ hats_properties = [
 
 // Colors properties
 colors_properties = [
-    { color: colors.red,       mainCol: make_colour_rgb(197, 17, 17),      secondCol: make_colour_rgb(122, 8, 56)      },       
-    { color: colors.blue,      mainCol: make_colour_rgb(19, 46, 209),      secondCol: make_colour_rgb(9, 21, 142)      },      
-    { color: colors.green,     mainCol: make_colour_rgb(17, 127, 45),      secondCol: make_colour_rgb(10, 77, 46)      },         
-    { color: colors.pink,      mainCol: make_colour_rgb(237, 84, 186),     secondCol: make_colour_rgb(171, 43, 173)    },      
-    { color: colors.orange,    mainCol: make_colour_rgb(237, 125, 13),     secondCol: make_colour_rgb(179, 62, 21)     },        
-    { color: colors.yellow,    mainCol: make_colour_rgb(245, 245, 87),     secondCol: make_colour_rgb(194, 135, 34)    },        
-    { color: colors.black,     mainCol: make_colour_rgb(63, 71, 78),       secondCol: make_colour_rgb(30, 31, 38)      },         
-    { color: colors.white,     mainCol: make_colour_rgb(214, 224, 240),    secondCol: make_colour_rgb(131, 148, 191)   },         
-    { color: colors.purple,    mainCol: make_colour_rgb(107, 47, 187),     secondCol: make_colour_rgb(59, 23, 124)     },        
-    { color: colors.brown,     mainCol: make_colour_rgb(113, 73, 30),      secondCol: make_colour_rgb(94, 38, 21)      },         
-    { color: colors.cyan,      mainCol: make_colour_rgb(56, 222, 220),     secondCol: make_colour_rgb(36, 168, 190)    },      
-    { color: colors.lime,      mainCol: make_colour_rgb(80, 239, 57),      secondCol: make_colour_rgb(21, 167, 66)     }      
+    { color: colors.red,       mainCol: make_colour_rgb(197, 17, 17),      secondCol: make_colour_rgb(122, 8, 56)       },       
+    { color: colors.blue,      mainCol: make_colour_rgb(19, 46, 209),      secondCol: make_colour_rgb(9, 21, 142)       },      
+    { color: colors.green,     mainCol: make_colour_rgb(17, 127, 45),      secondCol: make_colour_rgb(10, 77, 46)       },         
+    { color: colors.pink,      mainCol: make_colour_rgb(237, 84, 186),     secondCol: make_colour_rgb(171, 43, 173)     },      
+    { color: colors.orange,    mainCol: make_colour_rgb(237, 125, 13),     secondCol: make_colour_rgb(179, 62, 21)      },        
+    { color: colors.yellow,    mainCol: make_colour_rgb(245, 245, 87),     secondCol: make_colour_rgb(194, 135, 34)     },        
+    { color: colors.black,     mainCol: make_colour_rgb(63, 71, 78),       secondCol: make_colour_rgb(30, 31, 38)       },         
+    { color: colors.white,     mainCol: make_colour_rgb(214, 224, 240),    secondCol: make_colour_rgb(131, 148, 191)    },         
+    { color: colors.purple,    mainCol: make_colour_rgb(107, 47, 187),     secondCol: make_colour_rgb(59, 23, 124)      },        
+    { color: colors.brown,     mainCol: make_colour_rgb(113, 73, 30),      secondCol: make_colour_rgb(94, 38, 21)       },         
+    { color: colors.cyan,      mainCol: make_colour_rgb(56, 222, 220),     secondCol: make_colour_rgb(36, 168, 190)     },      
+    { color: colors.lime,      mainCol: make_colour_rgb(80, 239, 57),      secondCol: make_colour_rgb(21, 167, 66)      },      
+    { color: colors.maroon,    mainCol: make_colour_rgb(107, 43, 60),      secondCol: make_colour_rgb(65, 16, 25)       },      
+    { color: colors.rose,      mainCol: make_colour_rgb(236, 192, 211),    secondCol: make_colour_rgb(210, 146, 179)    },      
+    { color: colors.banana,    mainCol: make_colour_rgb(255, 254, 190),    secondCol: make_colour_rgb(209, 188, 138)    },      
+    { color: colors.gray,      mainCol: make_colour_rgb(131, 151, 167),    secondCol: make_colour_rgb(70, 86, 99)       },      
+    { color: colors.tan_,      mainCol: make_colour_rgb(146, 135, 118),    secondCol: make_colour_rgb(81, 66, 62)       },          
+    { color: colors.coral,     mainCol: make_colour_rgb(236, 117, 120),    secondCol: make_colour_rgb(180, 68, 99)      }      
 ];
 
 // VARIABLES
@@ -88,7 +94,7 @@ last_hit_enemy = noone;
 focused_chance_to_taunt = 0.75;
 unfocused_chance_to_taunt = 0.5;
 
-base_hp = 1;
+base_hp = 3;
 
 respawn_x = 0;
 respawn_y = 0;
@@ -100,8 +106,8 @@ hit_force_var = 1;
 
 dead_rot_speed = 12;
 
-base_amogus = 1;
-amogus_on_kill = 2;
+base_amogus = 3;
+amogus_on_kill = 3;
 max_amogus = 10;
 
 divider = 10
@@ -263,7 +269,13 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         purple,
         brown,
         cyan,
-        lime
+        lime,
+        maroon,
+        rose,
+        banana,
+        gray,
+        tan_,
+        coral
     }
 // DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
 // #endregion

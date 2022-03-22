@@ -265,7 +265,7 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
         for (var other_army_item_i=0; other_army_item_i<array_length(army); other_army_item_i++) {
             var other_amogus = army[other_army_item_i];
 
-            if (army_item_i == other_army_item_i || !other_amogus.on_ground || abs(other_amogus.y - amogus.y) > 2 || other_amogus.momentum_x > stopped_threshold || other_amogus.is_walking) {
+            if (other_amogus == noone || other_amogus == -4 || army_item_i == other_army_item_i || !other_amogus.on_ground || abs(other_amogus.y - amogus.y) > 2 || other_amogus.momentum_x > stopped_threshold || other_amogus.is_walking) {
                 continue;
             }
             
@@ -487,7 +487,7 @@ else if (got_hit_detected_done) {
 }
 
 // OWNER HITS ENEMY
-if (owner.hit_player_obj > 0 && owner.hit_player_obj.hitpause && owner.hit_player_obj.state_cat == SC_HITSTUN) {
+if (owner.hit_player_obj > 0 && owner.hit_player_obj != noone && owner.hit_player_obj.hitpause && owner.hit_player_obj.state_cat == SC_HITSTUN) {
     if (!hit_enemy_detected_done && last_hit_enemy != owner.hit_player_obj) {
         // On hit enemy
         hit_enemy_detected_done = true;
@@ -559,7 +559,7 @@ else if (dead_enemy_detected_done) {
                         on_ground: true, fall_time: 0, land_timer: 0, is_jumping: false, no_jump_timer: 0, jumpsquat_timer: -1, //Air
                         hp: argument[5], tumble: argument[6], heavy_land: true, hit_recently_timer: 0, hitpause_timer: 0, dead: false, dead_x:0, // Hit
                         focused: true, focused_timer:0, unfocused_timer:0, reaction_time: 0, wait_timer: 20 * argument[0], sitting: false, // Other
-                        role: roles.guardian_angel, possible_taunts: get_role_properties(roles.guardian_angel).possibleTaunts, taunt_detected_done: false, is_taunting: false, taunt_timer:-1 }; // Taunt
+                        role: roles.crewmate, possible_taunts: get_role_properties(roles.crewmate).possibleTaunts, taunt_detected_done: false, is_taunting: false, taunt_timer:-1 }; // Taunt
 
     // VISUAL
     // Set colors
@@ -569,7 +569,7 @@ else if (dead_enemy_detected_done) {
     random_hat(argument[0], new_amogus);
 
     // Set role
-    //random_role(argument[0], new_amogus);
+    random_role(argument[0], new_amogus);
 
     // GAMEPLAY
     randomize_walk_values(new_amogus);
@@ -895,6 +895,7 @@ else if (dead_enemy_detected_done) {
         hurt,
         dead,
         ghost,
+        guardianAngel,
         tauntPenguinDance,
         tauntScan,
         tauntTongue,
