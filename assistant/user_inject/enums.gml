@@ -55,7 +55,8 @@
         heart,
         policeman,
         crown,
-        halo
+        halo,
+        cheese
     }
 
     // Colors
