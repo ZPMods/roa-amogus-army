@@ -56,7 +56,8 @@
         policeman,
         crown,
         halo,
-        cheese
+        cheese,
+        top_hat
     }
 
     // Colors

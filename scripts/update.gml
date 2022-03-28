@@ -926,7 +926,8 @@ else if (dead_enemy_detected_done) {
         policeman,
         crown,
         halo,
-        cheese
+        cheese,
+        top_hat
     }
 
     // Colors

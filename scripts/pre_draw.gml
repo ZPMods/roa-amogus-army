@@ -143,7 +143,8 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
         policeman,
         crown,
         halo,
-        cheese
+        cheese,
+        top_hat
     }
 
     // Colors

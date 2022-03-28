@@ -59,7 +59,8 @@ hats_properties = [
     { hat: hats.policeman,         name: "policeman"    },
     { hat: hats.crown,             name: "crown"        },
     { hat: hats.halo,              name: "halo"         },
-    { hat: hats.cheese,            name: "cheese"       }
+    { hat: hats.cheese,            name: "cheese"       },
+    { hat: hats.top_hat,           name: "top_hat"      }
 ];
 
 // Colors properties
@@ -260,7 +261,8 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         policeman,
         crown,
         halo,
-        cheese
+        cheese,
+        top_hat
     }
 
     // Colors
