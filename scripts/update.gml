@@ -536,7 +536,6 @@ if (last_hit_enemy > 0 && last_hit_enemy.state == PS_RESPAWN) {
             var momentum_y = momentum_to_point(i+10, respawn_y, target_y);
             new_random_amogus(i, respawn_x+rand(i, -30, 30, false), respawn_y, momentum_x, momentum_y, base_hp+1, true);
         }
-
     }
 }
 else if (dead_enemy_detected_done) {
@@ -921,7 +920,8 @@ else if (dead_enemy_detected_done) {
         tree,
         jinx_hair,
         egg,
-        heart
+        heart,
+        policeman
     }
 
     // Colors
@@ -938,7 +938,13 @@ else if (dead_enemy_detected_done) {
         purple,
         brown,
         cyan,
-        lime
+        lime,
+        maroon,
+        rose,
+        banana,
+        gray,
+        tan_,
+        coral
     }
 // DANGER: Write your code ABOVE the LIBRARY DEFINES AND MACROS header or it will be overwritten!
 // #endregion

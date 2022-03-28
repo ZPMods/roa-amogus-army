@@ -52,7 +52,8 @@
         tree,
         jinx_hair,
         egg,
-        heart
+        heart,
+        policeman
     }
 
     // Colors
