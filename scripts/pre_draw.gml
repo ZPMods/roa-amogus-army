@@ -140,7 +140,9 @@ for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
         jinx_hair,
         egg,
         heart,
-        policeman
+        policeman,
+        crown,
+        halo
     }
 
     // Colors

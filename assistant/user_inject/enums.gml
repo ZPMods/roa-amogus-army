@@ -54,7 +54,8 @@
         egg,
         heart,
         policeman,
-        crown
+        crown,
+        halo
     }
 
     // Colors

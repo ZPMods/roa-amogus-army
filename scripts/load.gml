@@ -58,6 +58,7 @@ hats_properties = [
     { hat: hats.heart,             name: "heart"        },
     { hat: hats.policeman,         name: "policeman"    },
     { hat: hats.crown,             name: "crown"        }
+    { hat: hats.halo,              name: "halo"         }
 ];
 
 // Colors properties
@@ -256,7 +257,8 @@ for (var sprite_name_i=0; sprite_name_i<array_length(sprite_names); sprite_name_
         egg,
         heart,
         policeman,
-        crown
+        crown,
+        halo
     }
 
     // Colors

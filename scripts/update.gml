@@ -637,6 +637,7 @@ else if (dead_enemy_detected_done) {
     argument[0].reaction_time = rand(5, min_reaction_time, max_reaction_time, true);
 
 #define rand // Version 0
+    // rand(Int index, Float low_value, Float high_value, Bool floored) - returns a random value between low_value and high_value
     return argument[1] + random_func(argument[0], argument[2] - argument[1], argument[3]);
 
 #define get_state_properties // Version 0
@@ -683,6 +684,7 @@ else if (dead_enemy_detected_done) {
     argument[0].reaction_time *= 1.5;
 
 #define pct // Version 0
+    // pct(Int index, Float chance) - rolls a % chance between 0 and 1
     return random_func(argument[0], 1.00, false) <= argument[1];
 
 #define set_state // Version 0
@@ -921,7 +923,9 @@ else if (dead_enemy_detected_done) {
         jinx_hair,
         egg,
         heart,
-        policeman
+        policeman,
+        crown,
+        halo
     }
 
     // Colors
