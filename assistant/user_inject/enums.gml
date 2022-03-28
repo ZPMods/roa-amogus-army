@@ -53,7 +53,8 @@
         jinx_hair,
         egg,
         heart,
-        policeman
+        policeman,
+        crown
     }
 
     // Colors

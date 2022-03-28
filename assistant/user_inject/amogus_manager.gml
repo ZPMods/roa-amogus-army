@@ -377,10 +377,10 @@
     return -momentum;
 }
 
-#define rand {
+#define rand { // rand(Int index, Float low_value, Float high_value, Bool floored) - returns a random value between low_value and high_value
     return argument[1] + random_func(argument[0], argument[2] - argument[1], argument[3]);
 }
 
-#define pct {
+#define pct { // pct(Int index, Float chance) - rolls a % chance between 0 and 1
     return random_func(argument[0], 1.00, false) <= argument[1];
 }
