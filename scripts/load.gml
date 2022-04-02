@@ -99,7 +99,7 @@ last_hit_enemy = noone;
 focused_chance_to_taunt = 0.75;
 unfocused_chance_to_taunt = 0.5;
 
-base_hp = 3;
+base_hp = 1;
 
 respawn_x = 0;
 respawn_y = 0;
@@ -113,7 +113,11 @@ dead_rot_speed = 12;
 
 base_amogus = 3;
 amogus_on_kill = 3;
-max_amogus = 10;
+max_amogus = 15;
+
+updated_per_frame = 4;
+last_updated = -1;
+update_frame_routine = ceil(max_amogus/updated_per_frame);
 
 divider = 10
 

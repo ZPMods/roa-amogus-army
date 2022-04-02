@@ -41,3 +41,32 @@
     // Put in array
     array_add(ghosts, this);
 }
+
+#define ghost_update {
+    var this = argument[0];
+    var ghost_i = argument[1];
+
+    // ANIM STUFF -----------
+    // Take care of everything about frame timer in update
+    // So that it stops when in pause
+    var anim_speed = get_state_properties(states.ghost).speed;
+    var frame_timer_max = 60 / anim_speed;
+
+    this.frame_timer ++;
+
+    if (this.frame_timer >= frame_timer_max) {
+        this.cur_anim_frame++;
+        
+        if (this.cur_anim_frame >= get_state_properties(states.ghost).frameCount) {
+            this.cur_anim_frame = 0;
+        }
+
+        this.frame_timer = 0;
+    }
+
+    this.y -= this.speed;
+
+    if (this.y < 0) {
+        ghosts[ghost_i] = noone;
+    }
+}

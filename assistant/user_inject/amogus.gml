@@ -136,53 +136,24 @@
         amogus_focused_update(this);
     }
 
-    // COLLISION CHECKS
-    // Ground
-    if (collision_at_point(this.x, this.y+1) && this.momentum_y >= 0) {
-        amogus_on_ground_update(this);
-    }
-    // Air start
-    else if (this.is_on_ground) {
-        amogus_on_air_start(this);
-    }
+    // COLLISION BEHAVIORS
 
+    // On ground
+    if (this.is_on_ground) {
+        amogus_on_ground_update(this)
+    }
     // In air
-    if (!this.is_on_ground) {
+    else {
         amogus_in_air_update(this);
-    }
-    else if (this.momentum_y > 0) {
-        this.momentum_y = 0;
-    }
-
-    // Walls
-    if (abs(this.momentum_x) > 0 && collision_point(this.x + 16 * amogus_dir_from_momentum(this), this.y - 20, asset_get("par_block"), false, true) && !this.dead) {
-        amogus_on_touch_wall(this);
-    }
-
-    // OTHER AMOGUSES
-    if (this.momentum_x <= stopped_threshold && this.is_on_ground && !this.is_walking) {
-        for (var other_army_item_i=0; other_army_item_i<array_length(army); other_army_item_i++) {
-            var other_amogus = army[other_army_item_i];
-
-            if (other_amogus == noone || other_amogus == -4 || this.index == other_amogus.index || !other_amogus.is_on_ground || abs(other_amogus.y - this.y) > 2 || other_amogus.momentum_x > stopped_threshold || other_amogus.is_walking) {
-                continue;
-            }
-            
-            var dist = other_amogus.x - this.x;
-
-            if (abs(dist) <= push_dist_threshold) {
-                var dir = -sign(dist);
-                if (dir == 0) dir = 1;
-                
-                this.momentum_x = push_force * dir;
-            }
-        }
     }
 
     // GAME INTERACTIONS
     // Respawn on bottom blastzone
     if (this.y >= get_stage_data(SD_Y_POS) + get_stage_data(SD_BOTTOM_BLASTZONE) && this.momentum_y > 0) {
         var dead = amogus_on_touch_bottom_blastzone(this);
+        if (dead) {
+            return;
+        }
     }
 
     // APPLY
@@ -329,6 +300,17 @@
         this.frame_timer = 0;
     }
 
+}
+
+#define amogus_halted_update {
+    var this = argument[0];
+
+    if (this.hitpause_timer > 0) {
+        return;
+    }
+    
+    amogus_check_ground_collision(this);
+    amogus_check_walls_collision(this);
 }
 
 // RANDOMIZERS
@@ -482,15 +464,33 @@
 
 // COLLISION
 
+#define amogus_check_ground_collision {
+    var this = argument[0];
+
+    if (this.dead) {
+        this.is_on_ground = false;
+        return;
+    }
+
+    if (collision_at_point(this.x, this.y+1) && this.momentum_y >= 0) {
+        if (!this.is_on_ground) {
+            this.is_on_ground = true;
+            amogus_on_land(this);
+        }
+    }
+    else {
+        if (this.is_on_ground) {
+            this.is_on_ground = false;
+            amogus_on_air_start(this);
+        }
+    }
+}
+
 #define amogus_on_ground_update {
     var this = argument[0];
 
-    if (!this.is_on_ground && !this.dead) {
-        amogus_on_land(this);
-    }
-
-    if (collision_at_point(this.x, this.y) && !this.dead) {
-        this.y = amogus_closest_ground_above(this);
+    if (this.dead) {
+        return;
     }
 
     // Jump
@@ -525,6 +525,10 @@
 #define amogus_on_land {
     var this = argument[0];
 
+    if (this.dead) {
+        return;
+    }
+
     // On land
     var landlag_mult = 1;
     if (this.tumble == true) {
@@ -545,6 +549,12 @@
     if (this.is_jumping) {
         this.is_jumping = false;
     }
+
+    this.y = amogus_closest_ground_above(this);
+
+    if (this.momentum_y > 0) {
+        this.momentum_y = 0;
+    }
 }
 
 #define amogus_on_air_start {
@@ -554,6 +564,18 @@
 
     if (this.heavy_land) {
         this.heavy_land = false;
+    }
+}
+
+#define amogus_check_walls_collision {
+    var this = argument[0];
+
+    if (this.dead) {
+        return;
+    }
+
+    if (abs(this.momentum_x) > 0 && collision_point(this.x + 16 * amogus_dir_from_momentum(this), this.y - 20, asset_get("par_block"), false, true) && !this.dead) {
+        amogus_on_touch_wall(this);
     }
 }
 

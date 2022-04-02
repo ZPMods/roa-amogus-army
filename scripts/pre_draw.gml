@@ -31,6 +31,10 @@ for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
 for (var ghost_i=0; ghost_i<array_length(ghosts); ghost_i++) {
     var ghost = ghosts[ghost_i];
 
+    if (ghost == noone) {
+        continue;
+    }
+
     var state_to_draw = "ghost";
     if (ghost.guardian_angel) {
         state_to_draw = "guardianAngel";

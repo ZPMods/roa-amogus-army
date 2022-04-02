@@ -1,15 +1,9 @@
 #define army_count {
-    var count = 0;
-    
-    for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
-        var army_item = army[army_item_i];
+    return array_count(army);
+}
 
-        if (army_item != noone) {
-            count++;
-        }
-    }
-
-    return count;
+#define ghosts_count {
+    return array_count(ghosts);
 }
 
 #define get_state_properties {
