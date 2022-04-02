@@ -301,12 +301,7 @@
         if (!this.taunt_detected_done) {
             this.taunt_detected_done = true;
 
-            if (!this.sitting && this.is_on_ground && this.land_timer <= 0 && this.jumpsquat_timer < 0 && !this.is_taunting) {
-                if (pct(this.index, this.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
-                    this.taunt_timer = rand_int(this.index, min_taunt_wait_time, max_taunt_wait_time);
-                    this.wait_timer += this.taunt_timer;
-                }
-            }
+            amogus_on_taunt_start(this);
         }
     }
     else if (this.taunt_detected_done) {
@@ -815,6 +810,17 @@
 }
 
 // TAUNT
+#define amogus_on_taunt_start {
+    var this = argument[0];
+
+    if (!this.sitting && this.is_on_ground && this.land_timer <= 0 && this.jumpsquat_timer < 0 && !this.is_taunting) {
+        if (pct(this.index, this.focused_timer > 0 ? focused_chance_to_taunt : unfocused_chance_to_taunt)) {
+            this.taunt_timer = rand_int(this.index, min_taunt_wait_time, max_taunt_wait_time);
+            this.wait_timer += this.taunt_timer;
+        }
+    }
+}
+
 #define amogus_taunt {
     var this = argument[0];
 
