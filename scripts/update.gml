@@ -436,17 +436,7 @@ else if (dead_enemy_detected_done) {
     // GAME INTERACTIONS
     // Respawn on bottom blastzone
     if (this.y >= get_stage_data(SD_Y_POS) + get_stage_data(SD_BOTTOM_BLASTZONE) && this.momentum_y > 0) {
-        if (this.dead) {
-            army[this.index] = noone;
-            return;
-        }
-        else {
-            this.x = room_width / 2 + rand_int(this.index, -150, 150);
-            this.y = 0;
-            this.tumble = true;
-
-            this.momentum_x *= 0.75;
-        }
+        var dead = amogus_on_touch_bottom_blastzone(this);
     }
 
     // APPLY
@@ -1034,6 +1024,21 @@ else if (dead_enemy_detected_done) {
     var this = argument[0];
 
     this.dir = pct(0, 0.5) ? 1 : -1;
+
+#define amogus_on_touch_bottom_blastzone // Version 0
+    var this = argument[0];
+
+    if (this.dead) {
+        army[this.index] = noone;
+        return true;
+    }
+
+    this.x = room_width / 2 + rand_int(this.index, -150, 150);
+    this.y = 0;
+    this.tumble = true;
+
+    this.momentum_x *= 0.75;
+    return false;
 
 #define amogus_on_taunt_start // Version 0
     var this = argument[0];
