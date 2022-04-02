@@ -9,8 +9,6 @@ if (!init_done) {
     }
 }
 
-print(ghosts_count());
-
 // AMOGUSES
 var start = last_updated;
 for (var army_item_i=0; army_item_i<array_length(army); army_item_i++) {
@@ -1220,9 +1218,6 @@ else if (dead_enemy_detected_done) {
     }
 
     return count;
-
-#define ghosts_count // Version 0
-    return array_count(ghosts);
 
 #define momentum_to_point // Version 0
     var dist = argument[1] - argument[2];
