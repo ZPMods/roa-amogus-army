@@ -273,7 +273,7 @@
             this.forced_state_timer--;
         }
 
-        if (this.no_jump_timer > 0 && !this.is_jumping && this.land_timer <= 0 && !this.next_to_owner && this.focused && this.y - owner.y > y_jump_dist && !this.is_taunting) {
+        if (this.no_jump_timer > 0 && amogus_can_jump(this) && !this.next_to_owner && this.focused && this.y - owner.y > y_jump_dist) {
             this.no_jump_timer--;
         } 
 
@@ -319,30 +319,7 @@
         if (this.cur_anim_frame >= this.state_properties.frameCount) {
             if (this.stop_forced_state_on_end && this.forced_state_timer > 0) {
                 this.forced_state_timer = 0;
-
-                if (this.is_taunting) {
-                    this.is_taunting = false;
-
-                    // Special taunt interactions
-                    switch (this.state) {
-                        case states.tauntVentIn :
-                            amogus_force_state(this, states.tauntVentOut, 0);
-                            
-                            amogus_vent(this);
-
-                            this.is_taunting = true;
-                        break;
-
-                        case states.tauntShapeshift :
-                            amogus_force_state(this, states.tauntShapeshiftEnd, 0);
-
-                            amogus_randomize_color(this);
-                            amogus_randomize_hat(this);
-
-                            this.is_taunting = true;
-                        break;
-                    }
-                }
+                on_forced_state_end(this);
             }
             else {
                 this.cur_anim_frame = 0;
@@ -472,6 +449,34 @@
         default:
             return false;
         break;
+    }
+}
+
+#define on_forced_state_end {
+    var this = argument[0];
+
+    if (this.is_taunting) {
+        this.is_taunting = false;
+
+        // Special taunt interactions
+        switch (this.state) {
+            case states.tauntVentIn :
+                amogus_force_state(this, states.tauntVentOut, 0);
+                
+                amogus_vent(this);
+
+                this.is_taunting = true;
+            break;
+
+            case states.tauntShapeshift :
+                amogus_force_state(this, states.tauntShapeshiftEnd, 0);
+
+                amogus_randomize_color(this);
+                amogus_randomize_hat(this);
+
+                this.is_taunting = true;
+            break;
+        }
     }
 }
 
@@ -668,6 +673,12 @@
     this.is_jumping = true;
 }
 
+#define amogus_can_jump {
+    var this = argument[0];
+
+    return this.is_on_ground && !this.is_jumping && this.land_timer <= 0 && !this.is_taunting
+}
+
 // FOCUS
 
 #define amogus_focused_update {
@@ -816,6 +827,7 @@
 }
 
 // TAUNT
+
 #define amogus_on_taunt_start {
     var this = argument[0];
 
