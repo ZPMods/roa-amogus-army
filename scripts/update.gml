@@ -393,69 +393,16 @@ else if (dead_enemy_detected_done) {
     // COLLISION CHECKS
     // Ground
     if (collision_at_point(this.x, this.y+1) && this.momentum_y >= 0) {
-        if (!this.is_on_ground && !this.dead) {
-            // On land
-            var landlag_mult = 1;
-            if (this.tumble == true) {
-                this.tumble = false;
-                this.heavy_land = true;
-                landlag_mult = 1;
-
-                // Deal damage
-                amogus_take_damage(this);
-            }
-
-            this.land_timer = max(this.land_timer, this.fall_time * landlag_mult);
-
-            this.fall_time = 0;
-
-            this.is_on_ground = true;
-
-            if (this.is_jumping) {
-                this.is_jumping = false;
-            }
-        }
-
-        if (collision_at_point(this.x, this.y) && !this.dead) {
-            this.y = amogus_closest_ground_above(this);
-        }
-
-        // Jump
-        if (this.no_jump_timer <= 0 && this.focused) {
-            if (pct(this.index, chance_to_jump)) {
-                this.jumpsquat_timer = jumpsquat_time;
-                amogus_force_state(this, states.jumpsquat, jumpsquat_time);
-                this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
-            }
-            else {
-                this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
-                this.no_jump_timer /= 3;
-            }
-
-        }
+        amogus_on_ground_update(this);
     }
     // Air start
-    else {
-        if (this.is_on_ground) {
-            this.is_on_ground = false;
-
-            if (this.heavy_land == true) {
-                this.heavy_land = false;
-            }
-        }
+    else if (this.is_on_ground) {
+        amogus_on_air_start(this);
     }
 
     // In air
     if (!this.is_on_ground) {
-        if (this.momentum_y > 0 || this.tumble) {
-            this.fall_time++;
-        }
-
-        this.momentum_y += gravity;
-
-        if (this.momentum_y > fall_speed && !this.tumble) {
-            this.momentum_y = fall_speed;
-        }
+        amogus_in_air_update(this);
     }
     else if (this.momentum_y > 0) {
         this.momentum_y = 0;
@@ -463,12 +410,7 @@ else if (dead_enemy_detected_done) {
 
     // Walls
     if (abs(this.momentum_x) > 0 && collision_point(this.x + 16 * amogus_dir_from_momentum(this), this.y - 20, asset_get("par_block"), false, true) && !this.dead) {
-        if (this.tumble) {
-            this.momentum_x *= -1;
-        }
-        else {
-            this.momentum_x = 0;
-        }
+        amogus_on_touch_wall(this);
     }
 
     // OTHER AMOGUSES
@@ -741,6 +683,119 @@ else if (dead_enemy_detected_done) {
 
     return -1;
 
+#define amogus_on_ground_update // Version 0
+    var this = argument[0];
+
+    if (!this.is_on_ground && !this.dead) {
+        amogus_on_land(this);
+    }
+
+    if (collision_at_point(this.x, this.y) && !this.dead) {
+        this.y = amogus_closest_ground_above(this);
+    }
+
+    // Jump
+    if (this.no_jump_timer <= 0 && this.focused) {
+        if (pct(this.index, chance_to_jump)) {
+            this.jumpsquat_timer = jumpsquat_time;
+            amogus_force_state(this, states.jumpsquat, jumpsquat_time);
+            this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
+        }
+        else {
+            this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
+            this.no_jump_timer /= 3;
+        }
+
+    }
+
+#define amogus_on_land // Version 0
+    var this = argument[0];
+
+    // On land
+    var landlag_mult = 1;
+    if (this.tumble == true) {
+        this.tumble = false;
+        this.heavy_land = true;
+        landlag_mult = 1;
+
+        // Deal damage
+        amogus_take_damage(this);
+    }
+
+    this.land_timer = max(this.land_timer, this.fall_time * landlag_mult);
+
+    this.fall_time = 0;
+
+    this.is_on_ground = true;
+
+    if (this.is_jumping) {
+        this.is_jumping = false;
+    }
+
+#define amogus_take_damage // Version 0
+    var this = argument[0];
+
+    if (this.hit_recently_timer <= 0) {
+        this.hp--;
+        if (this.hp <= 0) {
+            this.tumble = true;
+            this.dead = true;
+            this.dead_x = argument[0].x;
+
+            var isGuardianAngel = this.role == roles.guardian_angel;
+            ghost_new(this.x, this.y, this.dir, this.mainCol, this.secondCol, isGuardianAngel);
+        }
+
+        if (this.dead) {
+            this.momentum_x = rand(0, -2.5, 2.5, false);
+            this.momentum_y = -rand(1, 2.0, 5.0, false);
+        }
+    }
+
+    argument[0].hit_recently_timer = hit_resistance_time;
+
+#define ghost_new // Version 0
+    var this           = ghost_entity_variables();
+    var posX           = argument[0]; // Int
+    var posY           = argument[1]; // Int
+    var dir            = argument[2]; // Int
+    var mainCol        = argument[3]; // Color
+    var secondCol      = argument[4]; // Color
+    var guardian_angel = argument[5]; // Bool
+
+    this.x = posX;
+    this.y = posY;
+    this.dir = dir;
+    this.mainCol = mainCol;
+    this.secondCol = secondCol;
+    this.guardian_angel = guardian_angel;
+
+    // Put in array
+    array_add(ghosts, this);
+
+#define ghost_entity_variables // Version 0
+    var a = {
+        // Position
+        x: 0,
+        y: 0,
+        dir: 1,
+
+        // Visual
+        mainCol: make_colour_rgb(197, 17, 17), // Red
+        secondCol: make_colour_rgb(122, 8, 56),  // Red
+
+        // Animation
+        opacity: 0.5,
+        cur_anim_frame: 0,
+        frame_timer: 0,
+        guardian_angel: false,
+
+        // Movement
+        speed: 2.5
+    };
+
+    return a;
+
 #define amogus_closest_ground_above // Version 0
     var this = argument[0];
 
@@ -751,6 +806,40 @@ else if (dead_enemy_detected_done) {
     }
 
     return this.y;
+
+#define pct // Version 0
+    // Rolls a % chance between 0 and 1
+    var index   = argument[0]; // Int
+    var chance  = argument[1]; // Float
+
+    return random_func(argument[0], 1.00, false) <= argument[1];
+
+#define amogus_in_air_update // Version 0
+    var this = argument[0];
+
+    if (this.momentum_y > 0 || this.tumble) {
+        this.fall_time++;
+    }
+
+    this.momentum_y += gravity;
+
+    if (this.momentum_y > fall_speed && !this.tumble) {
+        this.momentum_y = fall_speed;
+    }
+
+#define amogus_on_air_start // Version 0
+    var this = argument[0];
+
+    this.is_on_ground = false;
+
+    if (this.heavy_land) {
+        this.heavy_land = false;
+    }
+
+#define amogus_on_touch_wall // Version 0
+    var this = argument[0];
+
+    this.momentum_x *= this.tumble ? -1 : 0;
 
 #define amogus_can_walk // Version 0
     var this = argument[0];
@@ -796,8 +885,6 @@ else if (dead_enemy_detected_done) {
 #define amogus_focused_update // Version 0
     var this = argument[0];
 
-    prints(this.index, "focused update");
-
     // Look at player
     if (this.dir != amogus_dir_to_owner(this) && amogus_can_turn_around(this)) {
         this.dir = amogus_dir_to_owner(this);
@@ -805,7 +892,6 @@ else if (dead_enemy_detected_done) {
 
     // Far from player
     if (abs(this.x - owner.x) > this.x_stop_dist) {
-        prints(this.index, "far from player");
         // Walk towards player
         this.walk_timer = 999999;
         amogus_try_to_walk(this);
@@ -822,15 +908,6 @@ else if (dead_enemy_detected_done) {
 
     // Right next to player (on x and y)
     this.next_to_owner = (abs(this.x - owner.x) < this.x_stop_dist) && (this.y - owner.y < y_jump_dist);
-
-#define prints // Version 0
-    // Prints each parameter to console, separated by spaces.
-    var _out_string = string(argument[0])
-    for (var i=1; i<argument_count; i++) {
-        _out_string += " "
-        _out_string += string(argument[i])
-    }
-    print(_out_string)
 
 #define amogus_can_turn_around // Version 0
     var this = argument[0];
@@ -931,13 +1008,6 @@ else if (dead_enemy_detected_done) {
     this.sitting = false;
     this.focused_timer = rand_int(this.index, min_focused_time, max_focused_time);
 
-#define pct // Version 0
-    // Rolls a % chance between 0 and 1
-    var index   = argument[0]; // Int
-    var chance  = argument[1]; // Float
-
-    return random_func(argument[0], 1.00, false) <= argument[1];
-
 #define amogus_unfocused_on_stop // Version 0
     var this = argument[0];
 
@@ -969,70 +1039,6 @@ else if (dead_enemy_detected_done) {
     var this = argument[0];
 
     this.dir = pct(0, 0.5) ? 1 : -1;
-
-#define amogus_take_damage // Version 0
-    var this = argument[0];
-
-    if (this.hit_recently_timer <= 0) {
-        this.hp--;
-        if (this.hp <= 0) {
-            this.tumble = true;
-            this.dead = true;
-            this.dead_x = argument[0].x;
-
-            var isGuardianAngel = this.role == roles.guardian_angel;
-            ghost_new(this.x, this.y, this.dir, this.mainCol, this.secondCol, isGuardianAngel);
-        }
-
-        if (this.dead) {
-            this.momentum_x = rand(0, -2.5, 2.5, false);
-            this.momentum_y = -rand(1, 2.0, 5.0, false);
-        }
-    }
-
-    argument[0].hit_recently_timer = hit_resistance_time;
-
-#define ghost_new // Version 0
-    var this           = ghost_entity_variables();
-    var posX           = argument[0]; // Int
-    var posY           = argument[1]; // Int
-    var dir            = argument[2]; // Int
-    var mainCol        = argument[3]; // Color
-    var secondCol      = argument[4]; // Color
-    var guardian_angel = argument[5]; // Bool
-
-    this.x = posX;
-    this.y = posY;
-    this.dir = dir;
-    this.mainCol = mainCol;
-    this.secondCol = secondCol;
-    this.guardian_angel = guardian_angel;
-
-    // Put in array
-    array_add(ghosts, this);
-
-#define ghost_entity_variables // Version 0
-    var a = {
-        // Position
-        x: 0,
-        y: 0,
-        dir: 1,
-
-        // Visual
-        mainCol: make_colour_rgb(197, 17, 17), // Red
-        secondCol: make_colour_rgb(122, 8, 56),  // Red
-
-        // Animation
-        opacity: 0.5,
-        cur_anim_frame: 0,
-        frame_timer: 0,
-        guardian_angel: false,
-
-        // Movement
-        speed: 2.5
-    };
-
-    return a;
 
 #define amogus_taunt // Version 0
     var this = argument[0];

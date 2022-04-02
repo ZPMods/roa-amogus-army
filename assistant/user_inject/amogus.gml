@@ -139,69 +139,16 @@
     // COLLISION CHECKS
     // Ground
     if (collision_at_point(this.x, this.y+1) && this.momentum_y >= 0) {
-        if (!this.is_on_ground && !this.dead) {
-            // On land
-            var landlag_mult = 1;
-            if (this.tumble == true) {
-                this.tumble = false;
-                this.heavy_land = true;
-                landlag_mult = 1;
-
-                // Deal damage
-                amogus_take_damage(this);
-            }
-
-            this.land_timer = max(this.land_timer, this.fall_time * landlag_mult);
-
-            this.fall_time = 0;
-
-            this.is_on_ground = true;
-
-            if (this.is_jumping) {
-                this.is_jumping = false;
-            }
-        }
-
-        if (collision_at_point(this.x, this.y) && !this.dead) {
-            this.y = amogus_closest_ground_above(this);
-        }
-
-        // Jump
-        if (this.no_jump_timer <= 0 && this.focused) {
-            if (pct(this.index, chance_to_jump)) {
-                this.jumpsquat_timer = jumpsquat_time;
-                amogus_force_state(this, states.jumpsquat, jumpsquat_time);
-                this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
-            }
-            else {
-                this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
-                this.no_jump_timer /= 3;
-            }
-            
-        } 
+        amogus_on_ground_update(this);
     }
     // Air start
-    else {
-        if (this.is_on_ground) {
-            this.is_on_ground = false;
-
-            if (this.heavy_land == true) {
-                this.heavy_land = false;
-            }
-        }
+    else if (this.is_on_ground) {
+        amogus_on_air_start(this);
     }
 
     // In air
     if (!this.is_on_ground) {
-        if (this.momentum_y > 0 || this.tumble) {
-            this.fall_time++;
-        }
-
-        this.momentum_y += gravity;
-
-        if (this.momentum_y > fall_speed && !this.tumble) {
-            this.momentum_y = fall_speed;
-        }
+        amogus_in_air_update(this);
     }
     else if (this.momentum_y > 0) {
         this.momentum_y = 0;
@@ -209,12 +156,7 @@
 
     // Walls
     if (abs(this.momentum_x) > 0 && collision_point(this.x + 16 * amogus_dir_from_momentum(this), this.y - 20, asset_get("par_block"), false, true) && !this.dead) {
-        if (this.tumble) {
-            this.momentum_x *= -1;
-        }
-        else {
-            this.momentum_x = 0;
-        }
+        amogus_on_touch_wall(this);
     }
 
     // OTHER AMOGUSES
@@ -550,6 +492,87 @@
 
 // COLLISION
 
+#define amogus_on_ground_update {
+    var this = argument[0];
+
+    if (!this.is_on_ground && !this.dead) {
+        amogus_on_land(this);
+    }
+
+    if (collision_at_point(this.x, this.y) && !this.dead) {
+        this.y = amogus_closest_ground_above(this);
+    }
+
+    // Jump
+    if (this.no_jump_timer <= 0 && this.focused) {
+        if (pct(this.index, chance_to_jump)) {
+            this.jumpsquat_timer = jumpsquat_time;
+            amogus_force_state(this, states.jumpsquat, jumpsquat_time);
+            this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
+        }
+        else {
+            this.no_jump_timer = rand_int(this.index, min_nojump_time, max_nojump_time);
+            this.no_jump_timer /= 3;
+        }
+        
+    } 
+}
+
+#define amogus_in_air_update {
+    var this = argument[0];
+
+    if (this.momentum_y > 0 || this.tumble) {
+        this.fall_time++;
+    }
+
+    this.momentum_y += gravity;
+
+    if (this.momentum_y > fall_speed && !this.tumble) {
+        this.momentum_y = fall_speed;
+    }
+}
+
+#define amogus_on_land {
+    var this = argument[0];
+
+    // On land
+    var landlag_mult = 1;
+    if (this.tumble == true) {
+        this.tumble = false;
+        this.heavy_land = true;
+        landlag_mult = 1;
+
+        // Deal damage
+        amogus_take_damage(this);
+    }
+
+    this.land_timer = max(this.land_timer, this.fall_time * landlag_mult);
+
+    this.fall_time = 0;
+
+    this.is_on_ground = true;
+
+    if (this.is_jumping) {
+        this.is_jumping = false;
+    }
+}
+
+#define amogus_on_air_start {
+    var this = argument[0];
+
+    this.is_on_ground = false;
+
+    if (this.heavy_land) {
+        this.heavy_land = false;
+    }
+}
+
+#define amogus_on_touch_wall {
+    var this = argument[0];
+
+    this.momentum_x *= this.tumble ? -1 : 0;
+}
+
 #define amogus_closest_ground_above {
     var this = argument[0];
 
@@ -665,8 +688,6 @@
 #define amogus_focused_update {
     var this = argument[0];
 
-    prints(this.index, "focused update");
-
     // Look at player
     if (this.dir != amogus_dir_to_owner(this) && amogus_can_turn_around(this)) {
         this.dir = amogus_dir_to_owner(this);
@@ -674,7 +695,6 @@
 
     // Far from player
     if (abs(this.x - owner.x) > this.x_stop_dist) {
-        prints(this.index, "far from player");
         // Walk towards player
         this.walk_timer = 999999;
         amogus_try_to_walk(this);
