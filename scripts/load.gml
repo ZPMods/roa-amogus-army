@@ -134,8 +134,8 @@ chance_to_jump = 0.5;
 
 jumpsquat_time = 10;
 
-x_min_stop_dist = 40;
-x_max_stop_dist = 100;
+min_x_stop_dist = 40;
+max_x_stop_dist = 100;
 
 y_jump_dist = 60;
 
