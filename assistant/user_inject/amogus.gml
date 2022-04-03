@@ -683,12 +683,12 @@
     lerp_val = clamp(lerp_val, 0, 1);
 
     var base_jump_force = lerp(min_jump_height, max_jump_height, lerp_val);
-    var jump_force = base_jump_force + rand(0, -1.0, 1.0, false)
+    var jump_force = base_jump_force + rand_float(0, -1.0, 1.0)
 
     lerp_val = abs(this.x - owner.x)/100;
     lerp_val = clamp(lerp_val, 0, 1);
 
-    var jump_forward = lerp(0, rand(0, min_walk_speed, max_walk_speed, false) / divider, lerp_val);
+    var jump_forward = lerp(0, rand_float(0, min_walk_speed, max_walk_speed) / divider, lerp_val);
 
     this.momentum_y = -jump_force;
     this.momentum_x = jump_forward * amogus_dir_to_owner(this);
@@ -809,27 +809,63 @@
 
 // DAMAGE
 
+#define amogus_owner_hit_close {
+    var this = argument[0];
+
+    this.hitpause_timer = owner.hitstop_full;
+    this.tumble = true;
+
+    // Hitbox
+    var hitbox = owner.enemy_hitboxID;
+
+    var ang = get_hitbox_angle(hitbox);
+    ang += rand_int(this.index, -hit_ang_var, hit_ang_var);
+
+    var force = hitbox.kb_value + hitbox.kb_scale * 0.05 * get_player_damage(owner.player); 
+    force += rand_int(this.index, -hit_force_var, hit_force_var);
+
+    var force_x = lengthdir_x( force, ang );
+    var force_y = lengthdir_y( force, ang );
+
+    // Bounce on ground
+    if (this.is_on_ground && force_y > 0) {
+        force_y *= -0.5;
+    }
+
+    this.momentum_x = force_x;
+    this.momentum_y = force_y;
+} 
+
 #define amogus_take_damage {
     var this = argument[0];
 
     if (this.hit_recently_timer <= 0) {
         this.hp--;
         if (this.hp <= 0) {
-            this.tumble = true;
-            this.dead = true;
-            this.dead_x = argument[0].x;
-
-            var isGuardianAngel = this.role == roles.guardian_angel;
-            ghost_new(this.x, this.y, this.dir, this.mainCol, this.secondCol, isGuardianAngel);
+            amogus_die(this);
         }
 
         if (this.dead) {
-            this.momentum_x = rand(0, -2.5, 2.5, false);
-            this.momentum_y = -rand(1, 2.0, 5.0, false);
+            this.momentum_x = rand_float(this.index, -2.5, 2.5);
+            this.momentum_y = -rand_float(this.index, 2.0, 5.0);
         }
     }
     
     argument[0].hit_recently_timer = hit_resistance_time;
+}
+
+#define amogus_die {
+    var this = argument[0];
+
+    this.tumble = true;
+    this.dead = true;
+    this.dead_x = argument[0].x;
+
+    var isGuardianAngel = this.role == roles.guardian_angel;
+    ghost_new(this.x, this.y, this.dir, this.mainCol, this.secondCol, isGuardianAngel);
+
+    this.momentum_x = rand_float(this.index, -2.5, 2.5);
+    this.momentum_y = -rand_float(this.index, 2.0, 5.0);
 }
 
 #define amogus_on_touch_bottom_blastzone {

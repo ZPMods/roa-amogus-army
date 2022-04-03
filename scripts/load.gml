@@ -1,3 +1,8 @@
+// NOTES
+// This mod uses the Rivals Workshop Assistant, meaning that every function defined in a script in user_inject will get "injected" at the end of files where it's used.
+// This lets us have "mother" files with all the functions we need, without having to manually C/C when we need them.
+// We can also simulate having additional classes, like I did here with amogus.gml or ghost.gml
+
 pet_w = 0;
 run_speed = 0;
 max_run_dist = 999999999;
