@@ -104,7 +104,7 @@ last_hit_enemy = noone;
 focused_chance_to_taunt = 0.75;
 unfocused_chance_to_taunt = 0.5;
 
-base_hp = 1;
+base_hp = 3;
 
 respawn_x = 0;
 respawn_y = 0;
