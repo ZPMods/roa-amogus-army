@@ -812,10 +812,16 @@
 #define amogus_owner_hit_close {
     var this = argument[0];
 
+    // Hitbox
+    if (owner.enemy_hitboxID == noone || owner.enemy_hitboxID <= 0) {
+        return;
+    }
+
+    print(owner.enemy_hitboxID);
+
     this.hitpause_timer = owner.hitstop_full;
     this.tumble = true;
 
-    // Hitbox
     var hitbox = owner.enemy_hitboxID;
 
     var ang = get_hitbox_angle(hitbox);
