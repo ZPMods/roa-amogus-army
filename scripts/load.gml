@@ -178,6 +178,10 @@ push_force = 0.75;
 push_dist_threshold = 20;
 stopped_threshold = 0.5;
 
+// Random seed
+seed = owner.url + owner.player + owner.x + owner.y + get_player_color(owner.player) + get_stage_data(SD_ID) * max_amogus;
+print(seed);
+
 // Army
 army = [];
 ghosts = [];

@@ -277,10 +277,16 @@ else if (dead_enemy_detected_done) {
     this.secondCol = color.secondCol;
 
 #define rand_in_array // Version 0
-    var index   = argument[0]; // Int
+    var index   = seeded_index(argument[0]); // Int
     var array   = argument[1]; // Array
 
-    return array[random_func(argument[0], array_length(array), true)];
+    return array[random_func_2(index, array_length(array), true)];
+
+#define seeded_index // Version 0
+    var index = argument[0]; // Int
+
+    index += seed;
+    return (index % 199);
 
 #define amogus_randomize_hat // Version 0
     var this = argument[0];
@@ -310,12 +316,12 @@ else if (dead_enemy_detected_done) {
 
 #define rand // Version 0
     // Returns a random value between low_value and high_value
-    var index      = argument[0]; // Int
+    var index      = seeded_index(argument[0]); // Int
     var low_value  = argument[1]; // Float
     var high_value = argument[2]; // Float
     var floored    = argument[3]; // Bool
 
-    return low_value + random_func(index, high_value - low_value, floored);
+    return low_value + random_func_2(index, high_value - low_value, floored);
 
 #define rand_float // Version 0
     return rand(argument[0], argument[1], argument[2], false);
@@ -607,7 +613,7 @@ else if (dead_enemy_detected_done) {
     return false;
 
 #define random_point_above_stage // Version 0
-    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - get_stage_data(SD_WIDTH)/2;
+    var x_offset = random_func_2(argument[0], get_stage_data(SD_WIDTH), true) - get_stage_data(SD_WIDTH)/2;
     return stage_center_x + x_offset;
 
 #define amogus_on_ground_update // Version 0
@@ -633,10 +639,10 @@ else if (dead_enemy_detected_done) {
 
 #define pct // Version 0
     // Rolls a % chance between 0 and 1
-    var index   = argument[0]; // Int
+    var index   = seeded_index(argument[0]); // Int
     var chance  = argument[1]; // Float
 
-    return random_func(argument[0], 1.00, false) <= argument[1];
+    return random_func_2(index, 1.00, false) <= argument[1];
 
 #define amogus_in_air_update // Version 0
     var this = argument[0];
@@ -654,7 +660,6 @@ else if (dead_enemy_detected_done) {
 #define amogus_can_walk // Version 0
     var this = argument[0];
 
-    trace(this.wall_in_front);
     if (this.is_on_ground && this.land_timer <= 0 && this.jumpsquat_timer <= 0 && this.wait_timer <= 0 && !this.dead && !this.tumble && !this.is_taunting && !this.wall_in_front) {
 
         if ((this.x <= get_stage_data(SD_X_POS) + this.x_stop_dist && this.dir == -1) || (this.x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - this.x_stop_dist && this.dir == 1)) {

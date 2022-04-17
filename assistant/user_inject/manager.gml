@@ -63,7 +63,7 @@
 }
 
 #define random_point_above_stage {
-    var x_offset = random_func(argument[0], get_stage_data(SD_WIDTH), true) - get_stage_data(SD_WIDTH)/2;
+    var x_offset = random_func_2(argument[0], get_stage_data(SD_WIDTH), true) - get_stage_data(SD_WIDTH)/2;
     return stage_center_x + x_offset;
 }
 
