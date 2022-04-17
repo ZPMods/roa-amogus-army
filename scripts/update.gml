@@ -197,6 +197,9 @@ else if (dead_enemy_detected_done) {
         walk_timer      : 0,
         is_walking      : false,
 
+        // Wall
+        wall_in_front   : false,
+
         // Air
         is_on_ground    : true,
         is_jumping      : false,
@@ -651,7 +654,8 @@ else if (dead_enemy_detected_done) {
 #define amogus_can_walk // Version 0
     var this = argument[0];
 
-    if (this.is_on_ground && this.land_timer <= 0 && this.jumpsquat_timer <= 0 && this.wait_timer <= 0 && !this.dead && !this.tumble && !this.is_taunting) {
+    trace(this.wall_in_front);
+    if (this.is_on_ground && this.land_timer <= 0 && this.jumpsquat_timer <= 0 && this.wait_timer <= 0 && !this.dead && !this.tumble && !this.is_taunting && !this.wall_in_front) {
 
         if ((this.x <= get_stage_data(SD_X_POS) + this.x_stop_dist && this.dir == -1) || (this.x >= get_stage_data(SD_X_POS) + get_stage_data(SD_WIDTH) - this.x_stop_dist && this.dir == 1)) {
             return false;
@@ -1056,8 +1060,16 @@ else if (dead_enemy_detected_done) {
         return;
     }
 
-    if (abs(this.momentum_x) > 0 && collision_point(this.x + 16 * amogus_dir_from_momentum(this), this.y - 20, asset_get("par_block"), false, true) && !this.dead) {
+    var dir = this.dir;
+    if (abs(this.momentum_x) > 0) {
+        dir = amogus_dir_from_momentum(this);
+    }
+
+    if (collision_point(this.x + 16 * dir, this.y - 20, asset_get("par_block"), false, true) && !this.dead) {
         amogus_on_touch_wall(this);
+    }
+    else {
+        this.wall_in_front = false;
     }
 
 #define amogus_dir_from_momentum // Version 0
@@ -1073,6 +1085,7 @@ else if (dead_enemy_detected_done) {
     var this = argument[0];
 
     this.momentum_x *= this.tumble ? -1 : 0;
+    this.wall_in_front = true;
 
 #define amogus_owner_hit_close // Version 0
     var this = argument[0];
