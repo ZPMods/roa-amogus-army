@@ -179,7 +179,7 @@ push_dist_threshold = 20;
 stopped_threshold = 0.5;
 
 // Random seed
-seed = abs(owner.player + owner.x + owner.y + owner.char_height + owner.initial_dash_time + owner.initial_dash_speed + owner.dash_turn_time + get_player_color(owner.player) + get_stage_data(SD_X_POS) + get_stage_data(SD_Y_POS) + get_stage_data(SD_TOP_BLASTZONE) + get_stage_data(SD_BOTTOM_BLASTZONE)) * max_amogus;
+seed = floor(abs(owner.player + owner.x + owner.y + owner.char_height + owner.initial_dash_time + owner.initial_dash_speed + owner.dash_turn_time + get_player_color(owner.player) + get_stage_data(SD_X_POS) + get_stage_data(SD_Y_POS) + get_stage_data(SD_TOP_BLASTZONE) + get_stage_data(SD_BOTTOM_BLASTZONE)));
 print(seed);
 
 // Army
